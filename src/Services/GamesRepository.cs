@@ -34,7 +34,16 @@ namespace thegame.Services
             
             cells[^1] = new CellDto("User", new VectorDto(5, 5), "u", "", 0);
             
-            return CurrentGame = new GameDto(cells, true, true, width, height, Guid.Empty, false, 0);
+            return CurrentGame = new GameDto(null, cells, true, true, width, height, Guid.Empty, false, 0);
+        }
+        
+        public static GameDto MoveObj(string objTag, VectorDto delta)
+        {
+            var index = CurrentGame.Cells.Select((x, i) => (x, i)).FirstOrDefault(x => x.x.Id == objTag).i;
+            var movedVector = new VectorDto(delta.X + CurrentGame.Cells[index].Pos.X,
+                delta.Y + CurrentGame.Cells[index].Pos.Y);
+
+            return SetNewVectorFor(objTag, movedVector);
         }
 
         public static GameDto SetNewVectorFor(string objTag, VectorDto to)
@@ -43,7 +52,7 @@ namespace thegame.Services
             
             CurrentGame.Cells[index] = new CellDto(objTag, to, CurrentGame.Cells[index].Type, CurrentGame.Cells[index].Content, CurrentGame.Cells[index].ZIndex);
             
-            return CurrentGame = new GameDto(CurrentGame.Cells, true, true, CurrentGame.Width, CurrentGame.Height, CurrentGame.Id, false, 0);
+            return CurrentGame = new GameDto(null, CurrentGame.Cells, true, true, CurrentGame.Width, CurrentGame.Height, CurrentGame.Id, false, 0);
         }
     }
 }

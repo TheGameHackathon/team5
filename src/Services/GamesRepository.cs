@@ -95,7 +95,7 @@ namespace thegame.Services
             {
                 userDto.Pos += delta;
                 isSuccess = true;
-                return CurrentGame;
+                return CurrentGame = GetGame();
             }
 
             var box = objOnNewPos.FirstOrDefault(x => x.Type is "box"); 
@@ -110,18 +110,18 @@ namespace thegame.Services
                     if (objectBehindBox.Type is "box" or "wall")
                     {
                         isSuccess = false;
-                        return CurrentGame;
+                        return CurrentGame = GetGame();
                     }
                 }
 
                 isSuccess = true;
                 userDto.Pos = newUserPos;
                 box.Pos = objectBehindBoxPos;
-                return CurrentGame;
+                return CurrentGame = GetGame();
             }
 
             isSuccess = false;
-            return CurrentGame;
+            return CurrentGame = GetGame();
         }
 
         private static bool IsSolid(string type)
@@ -166,7 +166,7 @@ namespace thegame.Services
 
         private static GameDto GetGame()
         {
-            return CurrentGame = new GameDto(null, CurrentGame.Cells, true, true, CurrentGame.Width, CurrentGame.Height, CurrentGame.Id, IsFinished(), 0);
+            return CurrentGame = new GameDto(null!, CurrentGame.Cells, true, true, CurrentGame.Width, CurrentGame.Height, CurrentGame.Id, IsFinished(), 0);
         }
     }
 }

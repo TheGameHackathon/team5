@@ -33,7 +33,7 @@ namespace thegame.Services
             cells[^1] = new CellDto("User", new VectorDto(5, 5), "u", "", 2);
             cells[^2] = new CellDto("Point", new VectorDto(6, 6), "b1", "*", 1);
             
-            return CurrentGame = new GameDto(null, cells, true, true, width, height, Guid.Empty, false, 0);
+            return GetGame();
         }
 
         public static bool IsEmptyForObject(string objTag, VectorDto position)
@@ -70,13 +70,18 @@ namespace thegame.Services
             var index = FindIndexByTag(objTag);
             var obj = CurrentGame.Cells[index];
             CurrentGame.Cells[index] = new CellDto(objTag, to, obj.Type, obj.Content, obj.ZIndex);
-            
-            return CurrentGame = new GameDto(null, CurrentGame.Cells, true, true, CurrentGame.Width, CurrentGame.Height, CurrentGame.Id, false, 0);
+
+            return GetGame();
         }
 
         private static int FindIndexByTag(string tag)
         {
             return CurrentGame.Cells.Select((x, i) => (x, i)).FirstOrDefault(x => x.x.Id == tag).i;
+        }
+
+        private static GameDto GetGame()
+        {
+            return CurrentGame = new GameDto(null, CurrentGame.Cells, true, true, CurrentGame.Width, CurrentGame.Height, CurrentGame.Id, false, 0);
         }
     }
 }

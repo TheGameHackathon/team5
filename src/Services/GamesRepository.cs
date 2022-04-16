@@ -118,7 +118,13 @@ namespace thegame.Services
                 isSuccess = true;
                 userDto.Pos = newUserPos;
                 box.Pos = objectBehindBoxPos;
-                return Games[id] = GetGame(id);
+
+                if (Games[id].Cells.Where(x => x.Type == "point").Any(x => x.Pos.Equals(objectBehindBoxPos)))
+                    Games[id].Score++;
+                if (Games[id].Cells.Where(x => x.Type == "point").Any(x => x.Pos.Equals(newUserPos)))
+                    Games[id].Score--;
+                
+                return GetGame(id);
             }
 
             isSuccess = false;
@@ -158,7 +164,7 @@ namespace thegame.Services
 
         private static GameDto GetGame(Guid id)
         {
-            return new GameDto(null!, Games[id].Cells, true, true, Games[id].Width, Games[id].Height, Games[id].Id, IsFinished(id), 0);
+            return new GameDto(null!, Games[id].Cells, true, true, Games[id].Width, Games[id].Height, Games[id].Id, IsFinished(id), Games[id].Score);
         }
     }
 }

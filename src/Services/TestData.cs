@@ -9,6 +9,7 @@ namespace thegame.Services
         {
             var width = 10;
             var height = 8;
+            var player = new PlayerDto(new VectorDto(1, 1));
             var testCells = new[]
             {
                 new CellDto("1", new VectorDto(2, 4), "color1", "", 0),
@@ -17,7 +18,7 @@ namespace thegame.Services
                 new CellDto("4", new VectorDto(1, 0), "color2", "", 20),
                 new CellDto("5", movingObjectPosition, "color4", "☺", 10),
             };
-            return new GameDto(testCells, true, true, width, height, Guid.Empty, movingObjectPosition.X == 0, movingObjectPosition.Y);
+            return new GameDto(player, testCells, true, true, width, height, Guid.Empty, movingObjectPosition.X == 0, movingObjectPosition.Y);
         }
     }
 }

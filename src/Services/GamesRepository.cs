@@ -70,78 +70,22 @@ namespace thegame.Services
             var cells = CurrentGame.Cells;
             var boxes = cells.Where(x => x.Type == "box").Select(x => (x.Pos.X, x.Pos.Y)).ToHashSet();
             var points = cells.Where(x => x.Type == "point").Select(x => (x.Pos.X, x.Pos.Y)).ToHashSet();
+
             return points.SetEquals(boxes);
         }
-        
-        public static GameDto TryPushObject(string pusherTag, VectorDto pusherDelta, out bool isSuccess)
-        {
-            var pusherId = CurrentGame.Cells.Select((x, i) => (x, i)).FirstOrDefault(x => x.x.Id == pusherTag).i;
-            var newPos = new VectorDto(pusherDelta.X + CurrentGame.Cells[pusherId].Pos.X,
-                pusherDelta.Y + CurrentGame.Cells[pusherId].Pos.Y);
 
-            if (pusherTag == "User")
-                return TryPushUser(newPos, CurrentGame.Cells[pusherId], pusherDelta, out isSuccess);
-            isSuccess = false;
+        private static GameDto TryPush(string objTag, VectorDto delta)
+        {
+            var user = CurrentGame.Cells.First(x => x.Id == objTag);
+            var pushedObj = CurrentGame.Cells.FirstOrDefault(
+                x => x.ZIndex == user.ZIndex 
+                     && x.Type == "box"
+                     && x.Pos.Equals(new VectorDto(delta.X + user.Pos.X, delta.Y + user.Pos.Y)));
+            var newPushedObjPos = new VectorDto(delta.X * 2 + user.Pos.X, delta.Y * 2 + user.Pos.Y);
+
+            if (pushedObj is null || !IsEmptyForObject(pushedObj.Id, newPushedObjPos)) return CurrentGame;
+            SetNewVectorFor(pushedObj.Id, newPushedObjPos);
             return CurrentGame;
-        }
-
-        private static GameDto TryPushUser(VectorDto newUserPos, CellDto userDto, VectorDto delta, out bool isSuccess)
-        {
-            var objOnNewPos = CurrentGame
-                .Cells
-                .Where(x => x.Pos.Equals(newUserPos))
-                .ToArray();
-            if (objOnNewPos.All(x => !IsSolid(x.Type)))
-            {
-                userDto.Pos += delta;
-                isSuccess = true;
-                return CurrentGame = GetGame();
-            }
-
-            var box = objOnNewPos.FirstOrDefault(x => x.Type is "box"); 
-            if (box != null)
-            {
-                var objectBehindBoxPos = box.Pos + delta;
-                var objectsBehindBox = CurrentGame.Cells
-                    .Where(x => x.Pos.Equals(objectBehindBoxPos))
-                    .ToArray();
-                foreach (var objectBehindBox in objectsBehindBox)
-                {
-                    if (objectBehindBox.Type is "box" or "wall")
-                    {
-                        isSuccess = false;
-                        return CurrentGame = GetGame();
-                    }
-                }
-
-                isSuccess = true;
-                userDto.Pos = newUserPos;
-                box.Pos = objectBehindBoxPos;
-
-                if (CurrentGame.Cells.Where(x => x.Type == "point").Any(x => x.Pos.Equals(objectBehindBoxPos)))
-                    CurrentGame.Score++;
-                if (CurrentGame.Cells.Where(x => x.Type == "point").Any(x => x.Pos.Equals(newUserPos)))
-                    CurrentGame.Score--;
-                
-                return CurrentGame = GetGame();
-            }
-
-            isSuccess = false;
-            return CurrentGame = GetGame();
-        }
-
-        private static bool IsSolid(string type)
-            => type is "box" or "wall";
-
-        public static GameDto MovePlayerOnDelta(string objTag, VectorDto delta)
-        {
-            Console.WriteLine($"Хочу двинуть на {delta}");
-            var index = CurrentGame.Cells.Select((x, i) => (x, i)).FirstOrDefault(x => x.x.Id == objTag).i;
-            var movedVector = new VectorDto(delta.X + CurrentGame.Cells[index].Pos.X,
-                delta.Y + CurrentGame.Cells[index].Pos.Y);
-            var newGame = TryPushObject("User", delta, out var isPushed);
-            Console.WriteLine($"Удалось ли сдвинуть = {isPushed}");
-            return isPushed ? newGame : CurrentGame;
         }
 
         public static GameDto MoveObjOnDelta(string objTag, VectorDto delta)
@@ -150,6 +94,9 @@ namespace thegame.Services
             var objPos = CurrentGame.Cells[index].Pos;
             var movedVector = new VectorDto(delta.X + objPos.X, delta.Y + objPos.Y);
             
+            if (IsEmptyForObject(objTag, movedVector))
+               return  SetNewVectorFor(objTag, movedVector);
+            TryPush(objTag, delta);
             return SetNewVectorFor(objTag, movedVector);
         }
 

@@ -18,7 +18,7 @@ namespace thegame.Services
                 new CellDto("4", new VectorDto(1, 0), "color2", "", 20),
                 new CellDto("5", movingObjectPosition, "color4", "☺", 10),
             };
-            return new GameDto(player, testCells, true, true, width, height, Guid.Empty, movingObjectPosition.X == 0, movingObjectPosition.Y);
+            return new GameDto(0, player, testCells, true, true, width, height, Guid.Empty, movingObjectPosition.X == 0, movingObjectPosition.Y);
         }
     }
 }

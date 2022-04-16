@@ -8,6 +8,14 @@ namespace thegame.Services
 {
     public class GamesRepo
     {
+        public static string[][] maps =
+        {
+            new[] {"map2_l1.txt", "map2_l2.txt"},
+            new[] {"map1_l1.txt", "map1_l2.txt"},
+        };
+        
+        public static GameDto CurrentGame { get; private set; }
+
         public static Dictionary<Guid, GameDto> Games = new();
         
         public static CellDto[] ParseMap(string[] mapLayouts)
@@ -50,12 +58,13 @@ namespace thegame.Services
             return cells.ToArray();
         }
 
-        public static GameDto CreateGame(Guid id, string[] map)
+        public static GameDto CreateGame(Guid guid, int mapId)
         {
+            var map = maps[mapId].Select(System.IO.File.ReadAllText).ToArray();
             var height = map[0].Count(x => x == '\n');
             var width = map[0].Length / (height + 1);
             var cells = ParseMap(map);
-            return Games[id] = new GameDto(null, cells, true, true, height, width, id, false, 0);
+            return Games[guid] = new GameDto(mapId, null, cells, true, true, height, width, guid, false, 0);
         }
 
         public static bool IsEmptyForObject(Guid id, string objTag, VectorDto position)
@@ -72,7 +81,7 @@ namespace thegame.Services
             var points = cells.Where(x => x.Type == "point").Select(x => (x.Pos.X, x.Pos.Y)).ToHashSet();
 
             Games[id].Score = boxes.Count(x => points.Any(y => y.Equals(x)));
-
+            
             return points.SetEquals(boxes);
         }
 
@@ -122,7 +131,17 @@ namespace thegame.Services
 
         private static GameDto GetGame(Guid id)
         {
-            return new GameDto(null!, Games[id].Cells, true, true, Games[id].Width, Games[id].Height, id, IsFinished(id), Games[id].Score);
+            var isFinished = IsFinished(id);
+            var currentGame = Games[id];
+            if (isFinished && !IsLastMap(currentGame))
+                return CreateGame(id, currentGame.MapId + 1);
+            
+            return new GameDto(currentGame.MapId, null, currentGame.Cells, true, true, currentGame.Width, currentGame.Height, currentGame.Id, isFinished, currentGame.Score);
+        }
+
+        private static bool IsLastMap(GameDto game)
+        {
+            return game.MapId + 1 == maps.Length;
         }
     }
 }

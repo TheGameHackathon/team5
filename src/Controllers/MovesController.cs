@@ -12,7 +12,23 @@ namespace thegame.Controllers
         [HttpPost]
         public IActionResult Moves(Guid gameId, [FromBody]UserInputDto userInput)
         {
-            var game = GamesRepo.AGameDto(userInput.ClickedPos ?? new VectorDto(1, 1));
+            VectorDto deltaPos = null;
+            switch (userInput.KeyPressed)
+            {
+                case 37:
+                    deltaPos = new VectorDto(-1, 0);
+                     break;
+                case 38:
+                    deltaPos = new VectorDto(0, -1);
+                    break;
+                case 39:
+                    deltaPos = new VectorDto(1, 0);
+                    break;
+                case 40:
+                    deltaPos = new VectorDto(0, 1);
+                    break;
+            }
+            var game = GamesRepo.AGameDto(new VectorDto(1, 1));
             // if (userInput.ClickedPos != null)
             //     game.Cells.First(c => c.Type == "color4").Pos = userInput.ClickedPos;
             return Ok(game);

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using thegame.Models;
 
@@ -8,30 +9,72 @@ namespace thegame.Services
     {
         public static GameDto CurrentGame { get; private set; }
 
-        public static GameDto CreateGame()
+        public static CellDto[] ParseMap(string[] mapLayouts)
+        {
+            var cells = new List<CellDto>();
+            
+            foreach (var mapLayout in mapLayouts)
+            {
+                var map = mapLayout.Split("\n");
+                
+                for (int i = 0; i < map.Length; i++)
+                {
+                    var line = map[i];
+                    
+                    for (int j = 0; j < line.Length; j++)
+                    {
+                        switch (line[j])
+                        {
+                            case ' ':
+                                cells.Add(new CellDto(Guid.NewGuid().ToString() + ' ', new VectorDto(j, i), "b2", "", 2));
+                                break;
+                            case '#':
+                                cells.Add(new CellDto(Guid.NewGuid().ToString() + '#', new VectorDto(j, i), "b", "", 0));
+                                break;
+                            case '*':
+                                cells.Add(new CellDto(Guid.NewGuid().ToString() + '*', new VectorDto(j, i), "p1", "", 1));
+                                break;
+                            case '@':
+                                cells.Add(new CellDto(Guid.NewGuid().ToString() + '@', new VectorDto(j, i), "b1", "", 2));
+                                break;
+                            case '&':
+                                cells.Add(new CellDto("User", new VectorDto(j, i), "u", "", 2));
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+            }
+
+            return cells.ToArray();
+        }
+
+        public static GameDto CreateGame(string[] map)
         {
             var width = 8;
             var height = 9;
-            var cells = new CellDto[width * height + 2];
-
-            for (var i = 0; i < width; i++)
-            {
-                for (var j = 0; j < height; j++)
-                {
-                    cells[j + i * height] = new CellDto((j + i * height).ToString(), new VectorDto(i, j), "b", "", 0);
-                }
-            }
-            
-            for (var i = 1; i < width - 1; i++)
-            {
-                for (var j = 1; j < height - 1; j++)
-                {
-                    cells[j + i * height] = new CellDto((j + i * height).ToString() + "sdsd", new VectorDto(i, j), "b2", "", 2);
-                }
-            }
-            
-            cells[^1] = new CellDto("User", new VectorDto(5, 5), "u", "", 2);
-            cells[^2] = new CellDto("Point", new VectorDto(6, 6), "b1", "*", 1);
+            var cells = ParseMap(map);
+            // var cells = new CellDto[width * height + 2];
+            //
+            // for (var i = 0; i < width; i++)
+            // {
+            //     for (var j = 0; j < height; j++)
+            //     {
+            //         cells[j + i * height] = new CellDto((j + i * height).ToString(), new VectorDto(i, j), "b", "", 0);
+            //     }
+            // }
+            //
+            // for (var i = 1; i < width - 1; i++)
+            // {
+            //     for (var j = 1; j < height - 1; j++)
+            //     {
+            //         cells[j + i * height] = new CellDto((j + i * height).ToString() + "sdsd", new VectorDto(i, j), "b2", "", 2);
+            //     }
+            // }
+            //
+            // cells[^1] = new CellDto("User", new VectorDto(5, 5), "u", "", 2);
+            // cells[^2] = new CellDto("Point", new VectorDto(6, 6), "b1", "*", 1);
             
             return CurrentGame = new GameDto(null, cells, true, true, width, height, Guid.Empty, false, 0);
         }

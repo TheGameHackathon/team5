@@ -72,10 +72,70 @@ namespace thegame.Services
             var points = cells.Where(x => x.Type == "point").Select(x => (x.Pos.X, x.Pos.Y)).ToHashSet();
             return points.SetEquals(boxes);
         }
-
-        public bool TryPushObject(string pusherTag, VectorDto pusherDelta)
+        
+        public static GameDto TryPushObject(string pusherTag, VectorDto pusherDelta, out bool isSuccess)
         {
-            throw new NotImplementedException();
+            var pusherId = CurrentGame.Cells.Select((x, i) => (x, i)).FirstOrDefault(x => x.x.Id == pusherTag).i;
+            var newPos = new VectorDto(pusherDelta.X + CurrentGame.Cells[pusherId].Pos.X,
+                pusherDelta.Y + CurrentGame.Cells[pusherId].Pos.Y);
+
+            if (pusherTag == "User")
+                return TryPushUser(newPos, CurrentGame.Cells[pusherId], pusherDelta, out isSuccess);
+            isSuccess = false;
+            return CurrentGame;
+        }
+
+        private static GameDto TryPushUser(VectorDto newUserPos, CellDto userDto, VectorDto delta, out bool isSuccess)
+        {
+            var objOnNewPos = CurrentGame
+                .Cells
+                .Where(x => x.Pos.Equals(newUserPos))
+                .ToArray();
+            if (objOnNewPos.All(x => !IsSolid(x.Type)))
+            {
+                userDto.Pos += delta;
+                isSuccess = true;
+                return CurrentGame;
+            }
+
+            var box = objOnNewPos.FirstOrDefault(x => x.Type is "box"); 
+            if (box != null)
+            {
+                var objectBehindBoxPos = box.Pos + delta;
+                var objectsBehindBox = CurrentGame.Cells
+                    .Where(x => x.Pos.Equals(objectBehindBoxPos))
+                    .ToArray();
+                foreach (var objectBehindBox in objectsBehindBox)
+                {
+                    if (objectBehindBox.Type is "box" or "wall")
+                    {
+                        isSuccess = false;
+                        return CurrentGame;
+                    }
+                }
+
+                isSuccess = true;
+                userDto.Pos = newUserPos;
+                box.Pos = objectBehindBoxPos;
+                return CurrentGame;
+            }
+
+            isSuccess = false;
+            return CurrentGame;
+        }
+
+        private static bool IsSolid(string type)
+            => type is "box" or "wall";
+
+        public static GameDto MovePlayerOnDelta(string objTag, VectorDto delta)
+        {
+            Console.WriteLine($"Хочу двинуть на {delta}");
+            var index = CurrentGame.Cells.Select((x, i) => (x, i)).FirstOrDefault(x => x.x.Id == objTag).i;
+            var movedVector = new VectorDto(delta.X + CurrentGame.Cells[index].Pos.X,
+                delta.Y + CurrentGame.Cells[index].Pos.Y);
+            var newGame = TryPushObject("User", delta, out var isPushed);
+            Console.WriteLine($"Удалось ли сдвинуть = {isPushed}");
+            return isPushed ? newGame : CurrentGame;
         }
 
         public static GameDto MoveObjOnDelta(string objTag, VectorDto delta)

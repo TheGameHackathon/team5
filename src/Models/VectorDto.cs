@@ -27,5 +27,8 @@ namespace thegame.Models
         {
             return HashCode.Combine(X, Y);
         }
+
+        public static VectorDto operator +(VectorDto a, VectorDto b)
+            => new VectorDto(a.X + b.X, a.Y + b.Y);
     }
 }

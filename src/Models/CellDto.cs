@@ -25,8 +25,5 @@ namespace thegame.Models
         public string Type { get; set; }
         public string Content { get; set; }
 
-        public virtual void OnCollision(PlayerDto playerDto, VectorDto playerOffset, GameDto gameCondition)
-        {
-        }
     }
 }

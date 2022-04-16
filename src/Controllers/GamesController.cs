@@ -13,8 +13,7 @@ namespace thegame.Controllers
             var map1_l1 = System.IO.File.ReadAllText("map1_l1.txt");
             var map1_l2 = System.IO.File.ReadAllText("map1_l2.txt");
             
-            GamesRepo.CreateGame(new []{map1_l1, map1_l2});
-            return Ok(GamesRepo.SetNewVectorFor("User", new VectorDto(1, 1)));
+            return Ok(GamesRepo.CreateGame(new []{map1_l1, map1_l2}));
         }
     }
     

@@ -33,7 +33,7 @@ namespace thegame.Services
             cells[^1] = new CellDto("User", new VectorDto(5, 5), "u", "", 2);
             cells[^2] = new CellDto("Point", new VectorDto(6, 6), "b1", "*", 1);
             
-            return GetGame();
+            return CurrentGame = new GameDto(null, cells, true, true, width, height, Guid.Empty, false, 0);
         }
 
         public static bool IsEmptyForObject(string objTag, VectorDto position)

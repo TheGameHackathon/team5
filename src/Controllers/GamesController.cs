@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Mvc;
 using thegame.Models;
 using thegame.Services;
@@ -14,7 +15,7 @@ namespace thegame.Controllers
             var map1_l2 = System.IO.File.ReadAllText("map1_l2.txt");
             // var testMap = System.IO.File.ReadAllText("testMap.txt");
 
-            return Ok(GamesRepo.CreateGame(new []{map1_l1, map1_l2}));
+            return Ok(GamesRepo.CreateGame(Guid.NewGuid(), new []{map1_l1, map1_l2}));
             // return Ok(GamesRepo.CreateGame(new []{testMap}));
         }
     }

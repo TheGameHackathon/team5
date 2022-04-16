@@ -14,7 +14,7 @@ namespace thegame.Services
         {
             var width = 8;
             var height = 9;
-            var cells = new CellDto[width * height + 1];
+            var cells = new CellDto[width * height + 2];
 
             for (int i = 0; i < width; i++)
             {
@@ -33,11 +33,27 @@ namespace thegame.Services
             }
             
             cells[^1] = new CellDto("User", new VectorDto(5, 5), "u", "", 0);
+            cells[^2] = new CellDto("Point", new VectorDto(6, 6), "b1", "*", 1);
             
             return CurrentGame = new GameDto(null, cells, true, true, width, height, Guid.Empty, false, 0);
         }
-        
-        public static GameDto MoveObj(string objTag, VectorDto delta)
+
+        public bool IsEmptyForObject(string objTag, VectorDto position)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsFinished()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool TryPushObject(string pusherTag, VectorDto pusherDelta)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static GameDto MoveObjOnDelta(string objTag, VectorDto delta)
         {
             var index = CurrentGame.Cells.Select((x, i) => (x, i)).FirstOrDefault(x => x.x.Id == objTag).i;
             var movedVector = new VectorDto(delta.X + CurrentGame.Cells[index].Pos.X,

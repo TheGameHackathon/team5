@@ -24,5 +24,9 @@ namespace thegame.Models
         public int ZIndex { get; set; }
         public string Type { get; set; }
         public string Content { get; set; }
+
+        public virtual void OnCollision(PlayerDto playerDto, VectorDto playerOffset, GameDto gameCondition)
+        {
+        }
     }
 }

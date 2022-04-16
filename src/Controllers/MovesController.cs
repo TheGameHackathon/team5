@@ -12,10 +12,9 @@ namespace thegame.Controllers
         [HttpPost]
         public IActionResult Moves(Guid gameId, [FromBody]UserInputDto userInput)
         {
-            var game = GamesRepo.AGameDto(userInput.ClickedPos ?? new VectorDto(1, 1));
-            // if (userInput.ClickedPos != null)
-            //     game.Cells.First(c => c.Type == "color4").Pos = userInput.ClickedPos;
-            return Ok(game);
+            if (userInput.ClickedPos is not null)
+                Ok(GamesRepo.SetNewVectorFor("User", userInput.ClickedPos));
+            return Ok(GamesRepo.CurrentGame);
         }
     }
 }

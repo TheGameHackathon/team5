@@ -1,13 +1,16 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using thegame.Models;
 
 namespace thegame.Services
 {
     public class GamesRepo
     {
-        public static GameDto AGameDto(VectorDto movingObjectPosition)
+        public static GameDto CurrentGame { get; private set; }
+
+        public static GameDto CreateGame()
         {
             var width = 8;
             var height = 9;
@@ -29,9 +32,18 @@ namespace thegame.Services
                 }
             }
             
-            cells[cells.Length - 1] = new CellDto((5 * 5).ToString(), new VectorDto(5, 5), "u", "", 0);
+            cells[^1] = new CellDto("User", new VectorDto(5, 5), "u", "", 0);
             
-            return new GameDto(cells, true, true, width, height, Guid.Empty, movingObjectPosition.X == 0, movingObjectPosition.Y);
+            return CurrentGame = new GameDto(cells, true, true, width, height, Guid.Empty, false, 0);
+        }
+
+        public static GameDto SetNewVectorFor(string objTag, VectorDto to)
+        {
+            var index = CurrentGame.Cells.Select((x, i) => (x, i)).FirstOrDefault(x => x.x.Id == objTag).i;
+            
+            CurrentGame.Cells[index] = new CellDto(objTag, to, CurrentGame.Cells[index].Type, CurrentGame.Cells[index].Content, CurrentGame.Cells[index].ZIndex);
+            
+            return CurrentGame = new GameDto(CurrentGame.Cells, true, true, CurrentGame.Width, CurrentGame.Height, CurrentGame.Id, false, 0);
         }
     }
 }

@@ -52,10 +52,10 @@ namespace thegame.Services
 
         public static GameDto CreateGame(string[] map)
         {
-            var width = 8;
-            var height = 9;
+            var height = map[0].Count(x => x == '\n');
+            var width = map[0].Length / (height + 1);
             var cells = ParseMap(map);
-            return CurrentGame = new GameDto(null, cells, true, true, width, height, Guid.Empty, false, 0);
+            return CurrentGame = new GameDto(null, cells, true, true, height, width, Guid.Empty, false, 0);
         }
 
         public static bool IsEmptyForObject(string objTag, VectorDto position)

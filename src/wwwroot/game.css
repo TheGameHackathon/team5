@@ -1,5 +1,17 @@
 ﻿/* FloodFill styles */
 
+.b {
+    background-image: url("images/bricks.png");
+}
+
+.b2 {
+    background-image: url("images/bricks2.png");
+}
+
+.u {
+    background-image: url("images/unicorn.svg");
+}
+
 .color0 {
     background-color: blue;
 }

@@ -33,9 +33,10 @@ namespace thegame.Services
             }
             
             cells[^1] = new CellDto("User", new VectorDto(5, 5), "u", "", 0);
-            cells[^2] = new CellDto("Point", new VectorDto(6, 6), "b1", "*", 1);
+            cells[^2] = new CellDto("Point", new VectorDto(6, 6), "p1", "*", 1);
+            cells[^3] = new CellDto("Box", new VectorDto(5, 6), "b1", "[]", 2);
             
-            return CurrentGame = new GameDto(null, cells, true, true, width, height, Guid.Empty, false, 0);
+            return CurrentGame = new GameDto(null, cells, true, true, width, height, Guid.Empty, IsFinished(cells), 0);
         }
 
         public bool IsEmptyForObject(string objTag, VectorDto position)
@@ -43,9 +44,11 @@ namespace thegame.Services
             throw new NotImplementedException();
         }
 
-        public bool IsFinished()
+        public static bool IsFinished(CellDto[] cells)
         {
-            throw new NotImplementedException();
+            var boxes = cells.Where(x => x.Id == "Box").Select(x => (x.Pos.X, x.Pos.Y)).ToHashSet();
+            var points = cells.Where(x => x.Id == "Point").Select(x => (x.Pos.X, x.Pos.Y)).ToHashSet();
+            return points.SetEquals(boxes);
         }
 
         public bool TryPushObject(string pusherTag, VectorDto pusherDelta)
@@ -68,7 +71,7 @@ namespace thegame.Services
             
             CurrentGame.Cells[index] = new CellDto(objTag, to, CurrentGame.Cells[index].Type, CurrentGame.Cells[index].Content, CurrentGame.Cells[index].ZIndex);
             
-            return CurrentGame = new GameDto(null, CurrentGame.Cells, true, true, CurrentGame.Width, CurrentGame.Height, CurrentGame.Id, false, 0);
+            return CurrentGame = new GameDto(null, CurrentGame.Cells, true, true, CurrentGame.Width, CurrentGame.Height, CurrentGame.Id, IsFinished(CurrentGame.Cells), 0);
         }
     }
 }

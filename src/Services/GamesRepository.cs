@@ -71,6 +71,8 @@ namespace thegame.Services
             var boxes = cells.Where(x => x.Type == "box").Select(x => (x.Pos.X, x.Pos.Y)).ToHashSet();
             var points = cells.Where(x => x.Type == "point").Select(x => (x.Pos.X, x.Pos.Y)).ToHashSet();
 
+            Games[id].Score = boxes.Count(x => points.Any(y => y.Equals(x)));
+
             return points.SetEquals(boxes);
         }
 

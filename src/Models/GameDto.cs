@@ -4,7 +4,7 @@ namespace thegame.Models
 {
     public class GameDto
     {
-        public GameDto(CellDto[] cells, bool monitorKeyboard, bool monitorMouseClicks, int width, int height, Guid id, bool isFinished, int score)
+        public GameDto(PlayerDto player, CellDto[] cells, bool monitorKeyboard, bool monitorMouseClicks, int width, int height, Guid id, bool isFinished, int score)
         {
             Cells = cells;
             MonitorKeyboard = monitorKeyboard;
@@ -16,6 +16,7 @@ namespace thegame.Models
             Score = score;
         }
 
+        public PlayerDto Player { get; set; }
         public CellDto[] Cells { get; set; }
         public int Width { get; set; }
         public int Height { get; set; }

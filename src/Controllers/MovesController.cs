@@ -20,7 +20,7 @@ namespace thegame.Controllers
                 40 => new VectorDto(0, 1),
                 _ => new VectorDto(0, 0)
             };
-            var game = GamesRepo.MoveObjOnDelta("User", deltaPos);
+            var game = GamesRepo.MovePlayerOnDelta("User", deltaPos);
             return Ok(game);
         }
     }

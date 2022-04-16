@@ -1,14 +1,22 @@
 ﻿/* FloodFill styles */
 
-.b {
+.wall {
     background-image: url("images/bricks.png");
 }
 
-.b2 {
+.floor {
     background-image: url("images/bricks2.png");
 }
 
-.u {
+.point {
+    background-image: url("images/bricks2.png");
+}
+
+.box {
+    background-image: url("images/bricks2.png");
+}
+
+.user {
     background-image: url("images/unicorn.svg");
 }
 

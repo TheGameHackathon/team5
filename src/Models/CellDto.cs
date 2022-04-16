@@ -2,6 +2,8 @@ namespace thegame.Models
 {
     public class CellDto
     {
+        private string type;
+
         /// <summary>
         /// Frontend animate transition of the cell from old to new state.
         /// </summary>
@@ -22,11 +24,15 @@ namespace thegame.Models
         public string Id { get; set; }
         public VectorDto Pos { get; set; }
         public int ZIndex { get; set; }
-        public string Type { get; set; }
+
+        public string Type
+        {
+            get => OverType ?? type;
+            set => type = value;
+        }
+
+        public string? OverType { get; set; }
         public string Content { get; set; }
 
-        public virtual void OnCollision(PlayerDto playerDto, VectorDto playerOffset, GameDto gameCondition)
-        {
-        }
     }
 }

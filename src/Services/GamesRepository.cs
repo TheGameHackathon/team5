@@ -8,8 +8,8 @@ namespace thegame.Services
 {
     public class GamesRepo
     {
-        public static GameDto CurrentGame { get; private set; }
-
+        public static Dictionary<Guid, GameDto> Games = new();
+        
         public static CellDto[] ParseMap(string[] mapLayouts)
         {
             var cells = new List<CellDto>();
@@ -50,76 +50,77 @@ namespace thegame.Services
             return cells.ToArray();
         }
 
-        public static GameDto CreateGame(string[] map)
+        public static GameDto CreateGame(Guid id, string[] map)
         {
             var height = map[0].Count(x => x == '\n');
             var width = map[0].Length / (height + 1);
             var cells = ParseMap(map);
-            return CurrentGame = new GameDto(null, cells, true, true, height, width, Guid.Empty, false, 0);
+            return Games[id] = new GameDto(null, cells, true, true, height, width, id, false, 0);
         }
 
-        public static bool IsEmptyForObject(string objTag, VectorDto position)
+        public static bool IsEmptyForObject(Guid id, string objTag, VectorDto position)
         {
-           return CurrentGame.Cells
+           return Games[id].Cells
                .Where(x => x.Pos.Equals(position))
-               .FirstOrDefault(x => x.ZIndex == CurrentGame.Cells[FindIndexByTag(objTag)].ZIndex) is null;
+               .FirstOrDefault(x => x.ZIndex == Games[id].Cells[FindIndexByTag(id, objTag)].ZIndex) is null;
         }
 
-        public static bool IsFinished()
+        public static bool IsFinished(Guid id)
         {
-            var cells = CurrentGame.Cells;
+            var cells = Games[id].Cells;
             var boxes = cells.Where(x => x.Type == "box").Select(x => (x.Pos.X, x.Pos.Y)).ToHashSet();
             var points = cells.Where(x => x.Type == "point").Select(x => (x.Pos.X, x.Pos.Y)).ToHashSet();
 
             return points.SetEquals(boxes);
         }
 
-        private static GameDto TryPush(string objTag, VectorDto delta)
+        private static GameDto TryPush(Guid gameId, string objTag, VectorDto delta)
         {
-            var user = CurrentGame.Cells.First(x => x.Id == objTag);
-            var pushedObj = CurrentGame.Cells.FirstOrDefault(
+            var currentGame = Games[gameId];
+            var user = currentGame.Cells.First(x => x.Id == objTag);
+            var pushedObj = currentGame.Cells.FirstOrDefault(
                 x => x.ZIndex == user.ZIndex 
                      && x.Type == "box"
                      && x.Pos.Equals(new VectorDto(delta.X + user.Pos.X, delta.Y + user.Pos.Y)));
             var newPushedObjPos = new VectorDto(delta.X * 2 + user.Pos.X, delta.Y * 2 + user.Pos.Y);
 
-            if (pushedObj is null || !IsEmptyForObject(pushedObj.Id, newPushedObjPos)) return CurrentGame;
-            SetNewVectorFor(pushedObj.Id, newPushedObjPos);
-            return CurrentGame;
+            if (pushedObj is null || !IsEmptyForObject(gameId, pushedObj.Id, newPushedObjPos)) return currentGame;
+            SetNewVectorFor(gameId, pushedObj.Id, newPushedObjPos);
+            return currentGame;
         }
 
-        public static GameDto MoveObjOnDelta(string objTag, VectorDto delta)
+        public static GameDto MoveObjOnDelta(Guid gameId, string objTag, VectorDto delta)
         {
-            var index = FindIndexByTag(objTag);
-            var objPos = CurrentGame.Cells[index].Pos;
+            var index = FindIndexByTag(gameId, objTag);
+            var objPos = Games[gameId].Cells[index].Pos;
             var movedVector = new VectorDto(delta.X + objPos.X, delta.Y + objPos.Y);
             
-            if (IsEmptyForObject(objTag, movedVector))
-               return  SetNewVectorFor(objTag, movedVector);
-            TryPush(objTag, delta);
-            return SetNewVectorFor(objTag, movedVector);
+            if (IsEmptyForObject(gameId, objTag, movedVector))
+                return  SetNewVectorFor(gameId, objTag, movedVector);
+            TryPush(gameId, objTag, delta);
+            return SetNewVectorFor(gameId, objTag, movedVector);
         }
 
-        public static GameDto SetNewVectorFor(string objTag, VectorDto to)
+        public static GameDto SetNewVectorFor(Guid id, string objTag, VectorDto to)
         {
-            if (!IsEmptyForObject(objTag, to)) 
-                return CurrentGame;
+            if (!IsEmptyForObject(id, objTag, to)) 
+                return Games[id];
             
-            var index = FindIndexByTag(objTag);
-            var obj = CurrentGame.Cells[index];
-            CurrentGame.Cells[index] = new CellDto(objTag, to, obj.Type, obj.Content, obj.ZIndex);
+            var index = FindIndexByTag(id, objTag);
+            var obj = Games[id].Cells[index];
+            Games[id].Cells[index] = new CellDto(objTag, to, obj.Type, obj.Content, obj.ZIndex);
 
-            return GetGame();
+            return GetGame(id);
         }
 
-        private static int FindIndexByTag(string tag)
+        private static int FindIndexByTag(Guid id, string tag)
         {
-            return CurrentGame.Cells.Select((x, i) => (x, i)).FirstOrDefault(x => x.x.Id == tag).i;
+            return Games[id].Cells.Select((x, i) => (x, i)).FirstOrDefault(x => x.x.Id == tag).i;
         }
 
-        private static GameDto GetGame()
+        private static GameDto GetGame(Guid id)
         {
-            return CurrentGame = new GameDto(null!, CurrentGame.Cells, true, true, CurrentGame.Width, CurrentGame.Height, CurrentGame.Id, IsFinished(), CurrentGame.Score);
+            return new GameDto(null!, Games[id].Cells, true, true, Games[id].Width, Games[id].Height, id, IsFinished(id), Games[id].Score);
         }
     }
 }

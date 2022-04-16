@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using thegame.Models;
@@ -26,19 +27,19 @@ namespace thegame.Services
                         switch (line[j])
                         {
                             case ' ':
-                                cells.Add(new CellDto(Guid.NewGuid().ToString() + ' ', new VectorDto(j, i), "b2", "", 2));
+                                cells.Add(new CellDto(Guid.NewGuid().ToString() + ' ', new VectorDto(j, i), "floor", "", -999));
                                 break;
                             case '#':
-                                cells.Add(new CellDto(Guid.NewGuid().ToString() + '#', new VectorDto(j, i), "b", "", 0));
+                                cells.Add(new CellDto(Guid.NewGuid().ToString() + '#', new VectorDto(j, i), "wall", "", 3));
                                 break;
                             case '*':
-                                cells.Add(new CellDto(Guid.NewGuid().ToString() + '*', new VectorDto(j, i), "p1", "", 1));
+                                cells.Add(new CellDto(Guid.NewGuid().ToString() + '*', new VectorDto(j, i), "point", "*", 2));
                                 break;
                             case '@':
-                                cells.Add(new CellDto(Guid.NewGuid().ToString() + '@', new VectorDto(j, i), "b1", "", 2));
+                                cells.Add(new CellDto(Guid.NewGuid().ToString() + '@', new VectorDto(j, i), "box", "", 3));
                                 break;
                             case '&':
-                                cells.Add(new CellDto("User", new VectorDto(j, i), "u", "", 2));
+                                cells.Add(new CellDto("User", new VectorDto(j, i), "user", "", 3));
                                 break;
                             default:
                                 break;
@@ -46,7 +47,6 @@ namespace thegame.Services
                     }
                 }
             }
-
             return cells.ToArray();
         }
 
@@ -76,7 +76,11 @@ namespace thegame.Services
             // cells[^1] = new CellDto("User", new VectorDto(5, 5), "u", "", 2);
             // cells[^2] = new CellDto("Point", new VectorDto(6, 6), "b1", "*", 1);
             
-            return CurrentGame = new GameDto(null, cells, true, true, width, height, Guid.Empty, false, 0);
+            // cells[^1] = new CellDto("User", new VectorDto(5, 5), "u", "", 0);
+            // cells[^2] = new CellDto("Point", new VectorDto(6, 6), "b2", "*", 1);
+            // cells[^3] = new CellDto("Box", new VectorDto(5, 6), "b2", "[  ]", 2);
+            
+            return CurrentGame = new GameDto(null, cells, true, true, width, height, Guid.Empty, IsFinished(cells), 0);
         }
 
         public static bool IsEmptyForObject(string objTag, VectorDto position)
@@ -86,12 +90,14 @@ namespace thegame.Services
                .FirstOrDefault(x => x.ZIndex == CurrentGame.Cells[FindIndexByTag(objTag)].ZIndex) is null;
         }
 
-        public static bool IsFinished()
+        public static bool IsFinished(CellDto[] cells)
         {
-            throw new NotImplementedException();
+            var boxes = cells.Where(x => x.Id == "Box").Select(x => (x.Pos.X, x.Pos.Y)).ToHashSet();
+            var points = cells.Where(x => x.Id == "Point").Select(x => (x.Pos.X, x.Pos.Y)).ToHashSet();
+            return points.SetEquals(boxes);
         }
 
-        public static bool TryPushObject(string pusherTag, VectorDto pusherDelta)
+        public bool TryPushObject(string pusherTag, VectorDto pusherDelta)
         {
             throw new NotImplementedException();
         }

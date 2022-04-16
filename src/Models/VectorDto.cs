@@ -18,7 +18,7 @@ namespace thegame.Models
             return X == other.X && Y == other.Y;
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return obj is VectorDto other && Equals(other);
         }
@@ -29,6 +29,6 @@ namespace thegame.Models
         }
 
         public static VectorDto operator +(VectorDto a, VectorDto b)
-            => new VectorDto(a.X + b.X, a.Y + b.Y);
+            => new(a.X + b.X, a.Y + b.Y);
     }
 }

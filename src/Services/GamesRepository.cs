@@ -1,24 +1,21 @@
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using thegame.Models;
 
 namespace thegame.Services
 {
-    public class GamesRepo
+    public static class GamesRepo
     {
-        public static string[][] maps =
+        private static readonly string[][] Maps =
         {
             new[] {"map2_l1.txt", "map2_l2.txt"},
             new[] {"map1_l1.txt", "map1_l2.txt"},
         };
-        
-        public static GameDto CurrentGame { get; private set; }
 
-        public static Dictionary<Guid, GameDto> Games = new();
-        
-        public static CellDto[] ParseMap(string[] mapLayouts)
+        private static readonly Dictionary<Guid, GameDto> Games = new();
+
+        private static CellDto[] ParseMap(string[] mapLayouts)
         {
             var cells = new List<CellDto>();
             
@@ -49,32 +46,31 @@ namespace thegame.Services
                             case '&':
                                 cells.Add(new CellDto("User", new VectorDto(j, i), "user", "", 3));
                                 break;
-                            default:
-                                break;
                         }
                     }
                 }
             }
+            
             return cells.ToArray();
         }
 
         public static GameDto CreateGame(Guid guid, int mapId)
         {
-            var map = maps[mapId].Select(System.IO.File.ReadAllText).ToArray();
+            var map = Maps[mapId].Select(System.IO.File.ReadAllText).ToArray();
             var height = map[0].Count(x => x == '\n');
             var width = map[0].Length / (height + 1);
             var cells = ParseMap(map);
-            return Games[guid] = new GameDto(mapId, null, cells, true, true, height, width, guid, false, 0);
+            return Games[guid] = new GameDto(mapId, cells, true, true, height, width, guid, false, 0);
         }
 
-        public static bool IsEmptyForObject(Guid id, string objTag, VectorDto position)
+        private static bool IsEmptyForObject(Guid id, string objTag, VectorDto position)
         {
            return Games[id].Cells
                .Where(x => x.Pos.Equals(position))
                .FirstOrDefault(x => x.ZIndex == Games[id].Cells[FindIndexByTag(id, objTag)].ZIndex) is null;
         }
 
-        public static bool IsFinished(Guid id)
+        private static bool IsFinished(Guid id)
         {
             var cells = Games[id].Cells;
             var boxes = cells.Where(x => x.Type == "box").Select(x => (x.Pos.X, x.Pos.Y)).ToHashSet();
@@ -112,7 +108,7 @@ namespace thegame.Services
             return SetNewVectorFor(gameId, objTag, movedVector);
         }
 
-        public static GameDto SetNewVectorFor(Guid id, string objTag, VectorDto to)
+        private static GameDto SetNewVectorFor(Guid id, string objTag, VectorDto to)
         {
             if (!IsEmptyForObject(id, objTag, to)) 
                 return Games[id];
@@ -124,10 +120,7 @@ namespace thegame.Services
             return GetGame(id);
         }
 
-        private static int FindIndexByTag(Guid id, string tag)
-        {
-            return Games[id].Cells.Select((x, i) => (x, i)).FirstOrDefault(x => x.x.Id == tag).i;
-        }
+        private static int FindIndexByTag(Guid id, string tag) => Games[id].Cells.Select((x, i) => (x, i)).FirstOrDefault(x => x.x.Id == tag).i;
 
         private static GameDto GetGame(Guid id)
         {
@@ -136,12 +129,9 @@ namespace thegame.Services
             if (isFinished && !IsLastMap(currentGame))
                 return CreateGame(id, currentGame.MapId + 1);
             
-            return new GameDto(currentGame.MapId, null, currentGame.Cells, true, true, currentGame.Width, currentGame.Height, currentGame.Id, isFinished, currentGame.Score);
+            return new GameDto(currentGame.MapId, currentGame.Cells, true, true, currentGame.Width, currentGame.Height, currentGame.Id, isFinished, currentGame.Score);
         }
 
-        private static bool IsLastMap(GameDto game)
-        {
-            return game.MapId + 1 == maps.Length;
-        }
+        private static bool IsLastMap(GameDto game) => game.MapId + 1 == Maps.Length;
     }
 }

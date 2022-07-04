@@ -34,20 +34,23 @@ public class FloodFillGame
     public bool IsFinished { get; set; }
     public int Score { get; set; }
 
-    public void Step(string color)
+    public bool ColorStep(string color)
     {
         var queue = new Stack<CellDto>();
         queue.Push(Field[0]);
 
         var baseColor = Field[0].Type;
+        if (color == baseColor)
+            return IsFinished;
+        Score += 1;
         Field[0].Type = color;
 
         var used = new HashSet<Vector>();
         var neignbours = new List<Vector>();
-
         while (queue.Count > 0)
         {
-            var node = queue.Pop();
+        
+            var node = queue.Dequeue();
             TryGetNeighbours(node, neignbours, baseColor);
 
             foreach (var neighbour in neignbours.Where(x => !used.Contains(x)))
@@ -59,6 +62,7 @@ public class FloodFillGame
             node.Type = color;
             used.Add(new Vector() { X = node.Pos.X, Y = node.Pos.Y });
         }
+        return Field.All(cell => cell.Type == color);
     }
 
     public bool TryGetNeighbours(CellDto cell, List<Vector> neigbours, string color)
@@ -100,9 +104,9 @@ public class FloodFillGame
         return flag;
     }
 
-    public void Move(UserInputDto userInput)
-    {
-        var color = Field[userInput.ClickedPos.X + userInput.ClickedPos.Y * Width].Type;
-        Step(color);
-    }
+        public void Move(UserInputDto userInput)
+        {
+            var color = Field[userInput.ClickedPos.X + userInput.ClickedPos.Y * Width].Type;
+            IsFinished = ColorStep(color);
+        }
 }

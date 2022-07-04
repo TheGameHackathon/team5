@@ -27,9 +27,9 @@ public class MovesController : Controller
         
         //if (userInput.ClickedPos != null)
         //    game.Cells.First(c => c.Type == "color4").Pos = userInput.ClickedPos;
-        
-        
-        
+
+        var game =  _repo.GetGame(gameId);
+        game.Move(userInput);
         return Ok();
     }
 }

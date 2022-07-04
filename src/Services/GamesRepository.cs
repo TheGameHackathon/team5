@@ -7,25 +7,7 @@ public class GamesRepository
 {
     public GameDto CreateField(Difficult dif)
     {
-        var width = 8;
-        var height = 8;
-        var colorAmount = 3;
-
-        switch (dif)
-        {
-            case Difficult.Eazy:
-                width = height = 8;
-                colorAmount = 3;
-                break;
-            case Difficult.Medium:
-                width = height = 21;
-                colorAmount = 5;
-                break;
-            case Difficult.Hard:
-                width = height = 55;
-                colorAmount = 8;
-                break;
-        }
+        var (width,height, colorAmount) = GetParametersForField(dif);
 
         var testCells = new CellDto[width * height];
 
@@ -45,5 +27,31 @@ public class GamesRepository
             }
         }
         return new GameDto(testCells, true, true, width, height, Guid.Empty, false, 0);
+    }
+
+    private (int, int, int) GetParametersForField(Difficult dif)
+    {
+        var width = 8;
+        var height = 8;
+        var colorAmount = 3;
+
+        switch (dif)
+        {
+            case Difficult.Eazy:
+                width = height = 8;
+                colorAmount = 3;
+                break;
+            case Difficult.Medium:
+                width = height = 21;
+                colorAmount = 5;
+                break;
+            case Difficult.Hard:
+                width = height = 55;
+                colorAmount = 8;
+                break;
+            default:
+                throw new ArgumentOutOfRangeException($"Нахера ты мне передал эту сложность{dif}");
+        }
+        return (width, height, colorAmount);
     }
 }

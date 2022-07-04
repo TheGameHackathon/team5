@@ -85,6 +85,22 @@ function renderField(game) {
         }
         field.appendChild(row);
     }
+    let btn = document.createElement("button");
+    btn.id = "undo"
+    btn.innerHTML = "Undo"
+    btn.onclick = () => {
+        fetch(`/api/games/${game.id}/moves/undo`,
+            {
+                method: "POST",
+            })
+        .then(handleApiErrors)
+        .then(newGame => {
+            game = newGame;
+            updateField(game);
+        });
+    }
+    document.body.appendChild(btn);
+    //field.appendChild(btn)
     updateField(game);
 }
 

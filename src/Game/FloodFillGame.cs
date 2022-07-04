@@ -49,9 +49,8 @@ public class FloodFillGame
         while (queue.Count > 0)
         {
             var node = queue.Pop();
-            var neignbours = TryGetNeighbours(node, baseColor);
-
-            foreach (var neighbour in neignbours.Where(x => !used.Contains(x)))
+            var neigbhours = TryGetNeighbours(node, baseColor);
+            foreach (var neighbour in neigbhours.Where(x => !used.Contains(x)))
             {
                 queue.Push(Field[neighbour.X + neighbour.Y * Width]);
             }

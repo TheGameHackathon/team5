@@ -5,6 +5,7 @@ const scoreElement = document.getElementsByClassName("scoreContainer")[0];
 const startButton = document.getElementsByClassName("startButton")[0];
 let game = null;
 let currentCells = {};
+let isWaiting = false;
 
 function handleApiErrors(result) {
     if (!result.ok) {
@@ -20,12 +21,39 @@ async function startGame() {
         .then(handleApiErrors);
     window.history.replaceState(game.id, "The Game", "/" + game.id);
     renderField(game);
+} 
+function SimpleLock(){
+    this.locked = false;
+    this.callbacks = [];
+    this.acquire = function(withLock = true){
+        if(this.locked){
+            if (withLock)
+                return new Promise(function(resolve){
+                    this.callbacks.push(resolve);
+                }.bind(this));
+        } else {
+            this.locked = true;
+            return Promise.resolve(true);
+        }
+    }
+    this.release = function(){
+        if(this.callbacks.length > 0){
+            let callback = this.callbacks.shift();
+            callback(this);
+        } else {
+            this.locked = false;
+        }
+    }
 }
+
+let lock = new SimpleLock();
 
 function makeMove(userInput) {
     if (!game || game.isFinished) return;
+    isWaiting = true;
     console.log("send userInput: %o", userInput);
-    fetch(`/api/games/${game.id}/moves`,
+    lock.acquire().then(()=> {
+        fetch(`/api/games/${game.id}/moves`,
             {
                 method: "POST",
                 headers: {
@@ -33,11 +61,14 @@ function makeMove(userInput) {
                 },
                 body: JSON.stringify(userInput)
             })
-        .then(handleApiErrors)
-        .then(newGame => {
-            game = newGame;
-            updateField(game);
-        });
+            .then(handleApiErrors)
+            .then(newGame => {
+                game = newGame;
+                updateField(game);
+                isWaiting = false;
+            });
+        lock.release()
+    });
 }
 
 function renderField(game) {

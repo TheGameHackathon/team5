@@ -14,11 +14,7 @@ public class GamesRepository : IGamesRepository
         _fieldGenerator = fieldGenerator;
     }
 
-    public FloodFillGame StartNewGame(Guid id, int width, int height)
-    {
-        _activegames[id] = new FloodFillGame(id, _fieldGenerator.GenerateNewField(), width, height);
-        return _activegames[id];
-    }
+
 
     public FloodFillGame GetGame(Guid id)
     {

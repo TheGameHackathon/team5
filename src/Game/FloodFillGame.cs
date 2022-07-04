@@ -11,7 +11,7 @@ public class FloodFillGame
     
     public List<ICommand> commands = new List<ICommand>();
     
-    public FloodFillGame(Field field, int width, int height, Guid id, bool isFinished, int score)
+    public FloodFillGame(Guid id, Field field, int width, int height, bool isFinished=false, int score=0)
     {
         Field = field;
         Width = width;

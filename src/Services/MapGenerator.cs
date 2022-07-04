@@ -5,7 +5,7 @@ namespace thegame.Services
 {
     public class MapGenerator : IFieldGenerator
     {
-        public Filed GenerateNewField()
+        public Field GenerateNewField()
         {
             throw new NotImplementedException();
         }

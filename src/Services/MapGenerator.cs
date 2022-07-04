@@ -5,6 +5,11 @@ namespace thegame.Services
 {
     public class MapGenerator : IFieldGenerator
     {
+        public Filed GenerateNewField()
+        {
+            throw new NotImplementedException();
+        }
+
         public GameDto StartNewGame(Difficult dif)
         {
             var (width, height, colorAmount) = GetParametersForField(dif);

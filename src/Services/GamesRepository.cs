@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+
 namespace thegame.Services;
 
 public class GamesRepository : IGamesRepository

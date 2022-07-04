@@ -7,15 +7,15 @@ namespace thegame.Controllers;
 [Route("api/games")]
 public class GamesController : Controller
 {
-    private readonly IGameRepository _repo;
+    private readonly IGamesRepository _repo;
 
-    public GamesController(IGameRepository repo)
+    public GamesController(IGamesRepository repo)
     {
         _repo = repo;
     }
     [HttpPost]
     public IActionResult Index()
     {
-        return Ok(new GamesRepository().CreateField(GamesRepository.Difficult.Medium));
+        return Ok(new MapGenerator().StartNewGame(MapGenerator.Difficult.Medium));
     }
 }

@@ -1,10 +1,8 @@
 using System;
-using thegame.Services;
 using System.Collections.Generic;
 using System.Linq;
 using thegame.Commands;
 using thegame.Models;
-using thegame.Game;
 
 
 namespace thegame;
@@ -99,5 +97,35 @@ public class FloodFillGame
     {
         var color = Field[userInput.ClickedPos.X + userInput.ClickedPos.Y * Width].Type;
         IsFinished = ColorStep(color);
+    }
+
+
+    public void SmartMove()
+    {
+
+        int max_color;
+        int max_count;
+        var color = Field[0];
+        FloodFillGame game;
+        for (int i = 1; i < 8; i++)
+        {
+            game = new FloodFillGame(Field, Width, Height, Id, IsFinished, Score);
+            for (int j = 1; j < 8; j++)
+            {
+                game.ColorStep("color" + j);
+            }
+            var dic = new Dictionary<string, int>();
+            foreach( var a in Field)
+            {
+                if (dic.ContainsKey(a.Content))
+                    dic[a.Content]++;
+                else
+                    dic.Add(a.Content, 1);
+            }
+            //for
+        }
+
+        max_color = 0;
+        max_count = 0;
     }
 }

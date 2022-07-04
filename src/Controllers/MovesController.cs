@@ -22,19 +22,32 @@ public class MovesController : Controller
     [HttpPost]
     public IActionResult Moves(Guid gameId, [FromBody]UserInputDto userInput)
     {
-      
+
         //var game = TestData.AGameDto(userInput.ClickedPos ?? new VectorDto {X = 1, Y = 1});
 
         ////_gamesRepository._activegames[gameId].ActComand(usrinput);
         ////маапить игру и отправлять
-        
+
         //if (userInput.ClickedPos != null)
         //    game.Cells.First(c => c.Type == "color4").Pos = userInput.ClickedPos;
 
-        var game =  _repo.GetGame(gameId);
-       
-        game.Move(userInput);
-        var mapped = _mapper.Map<GameDto>(game);
-        return Ok(mapped);
+
+        var game = _repo.GetGame(gameId);
+        if (userInput != null)
+        {
+            if (userInput.KeyPressed == 'i')
+            {
+                game.SmartMove();
+                return Ok(_mapper.Map<GameDto>(game));
+            }
+        }
+
+        if (userInput.ClickedPos != null)
+        {
+            game.Move(userInput);
+            var mapped = _mapper.Map<GameDto>(game);
+            return Ok(mapped);
+        }
+        return Ok();
     }
 }

@@ -130,3 +130,8 @@
     background-image: url(images/package.svg);
     filter: brightness(50%);
 }
+
+#exitButton{
+    position: absolute;
+    z-index: 1000;
+}

@@ -3,9 +3,31 @@ const startMessage = document.getElementsByClassName("startMessage")[0];
 const startgameOverlay = document.getElementsByClassName("start")[0];
 const scoreElement = document.getElementsByClassName("scoreContainer")[0];
 const startButton = document.getElementsByClassName("startButton")[0];
+const exitButton = document.getElementById("exitButton");
+
 let game = null;
 let currentCells = {};
 let isWaiting = false;
+let spectatorMode = false;
+let pollingTimeout = null;
+
+async function handleSpectatePolling(){
+    let resp = await fetch(`/api/games/${game.id}`,
+        {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            },
+        })
+    if (resp.ok){
+        game = await resp.json()
+        renderField(game);
+        pollingTimeout = setTimeout(handleSpectatePolling, 2000);
+    }
+    else{
+        pollingTimeout = null;
+    }
+}
 
 function handleApiErrors(result) {
     if (!result.ok) {
@@ -16,12 +38,23 @@ function handleApiErrors(result) {
 }
 
 async function startGame() {
+    if (game && game.id){
+        fetch(`/api/games/${game.id}`, { method: "DELETE", headers: {'content-type': 'application/json'}})
+            .then(handleApiErrors);
+    }
+    spectatorMode = false;
+    exitButton.classList.toggle("hidden", false);
     let diff = document.getElementById('difficult').value;
     game = await fetch("/api/games", { method: "POST", body: JSON.stringify({ difficult: diff }), headers: {'content-type': 'application/json'}})
         .then(handleApiErrors);
     window.history.replaceState(game.id, "The Game", "/" + game.id);
     renderField(game);
-} 
+}
+
+async function exitGame() {
+    await fetch(`/api/games/${game.id}`, { method: "DELETE", headers: {'content-type': 'application/json'}})
+    window.location = '/'
+}
 function SimpleLock(){
     this.locked = false;
     this.callbacks = [];
@@ -168,22 +201,45 @@ function addResizeListener() {
 }
 
 function onCellClick(e) {
-    if (!game || !game.monitorMouseClicks) return;
+    if (!game || !game.monitorMouseClicks || spectatorMode) return;
     const x = e.target.dataset.x;
     const y = e.target.dataset.y;
     makeMove({ clickedPos: { x, y } });
 }
 
-function initializePage() {
-    const gameId = window.location.pathname.substring(1);
-    // use gameId if you want
+async function initializePage() {
+    exitButton.addEventListener("click", exitGame);
     startButton.addEventListener("click", e => {
         startgameOverlay.classList.toggle("hidden", true);
         startGame();
     });
+    const gameId = window.location.pathname.substring(1);
+    startgameOverlay.classList.toggle("hidden", true);
+    if (gameId){
+        let resp = await fetch(`/api/games/${gameId}`,
+            {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+            })
+        if (resp.ok){
+            game = await resp.json()
+            spectatorMode = true;
+            addResizeListener();
+            renderField(game);
+            exitButton.classList.toggle("hidden", false);
+            pollingTimeout = setTimeout(handleSpectatePolling, 2000);
+            return;
+        }
+    }
+    startgameOverlay.classList.toggle("hidden", false);
+    // use gameId if you want
+
     addKeyboardListener();
     addResizeListener();
     startButton.focus();
 }
-
-initializePage();
+window.addEventListener("load",()=>{
+    initializePage();
+});

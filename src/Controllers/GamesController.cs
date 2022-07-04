@@ -8,14 +8,21 @@ namespace thegame.Controllers;
 public class GamesController : Controller
 {
     private readonly IGamesRepository _repo;
+    private readonly IFieldGenerator _fieldGenerator;
 
-    public GamesController(IGamesRepository repo)
+    public GamesController(IGamesRepository repo, IFieldGenerator fieldGenerator)
     {
         _repo = repo;
+        _fieldGenerator = fieldGenerator;
     }
     [HttpPost]
     public IActionResult Index()
     {
-        return Ok(new MapGenerator().StartNewGame(MapGenerator.Difficult.Medium));
+        var gameDto = _fieldGenerator.GenerateNewField(0);
+
+        _repo.AddNewGame(gameDto);
+        return Ok(gameDto);
+        //var field = _fieldGenerator.sta
+        //return Ok(new FieldGenerator().StartNewGame(FieldGenerator.Difficult.Medium));
     }
 }

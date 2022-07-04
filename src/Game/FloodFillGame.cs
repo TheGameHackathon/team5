@@ -2,7 +2,7 @@ using System;
 using thegame.Services;
 using System.Collections.Generic;
 using thegame.Commands;
-
+using thegame.Models;
 
 namespace thegame;
 
@@ -10,8 +10,8 @@ public class FloodFillGame
 {
     
     public List<ICommand> commands = new List<ICommand>();
-    
-    public FloodFillGame(Field field, int width, int height, Guid id, bool isFinished, int score)
+
+    public FloodFillGame(CellDto[] field, int width, int height, Guid id, bool isFinished, int score)
     {
         Field = field;
         Width = width;
@@ -23,7 +23,7 @@ public class FloodFillGame
         commands.Add(new CommandPickColor());
     }
 
-    public Field Field { get; set; }
+    public CellDto[] Field { get; set; }
     public int Width { get; set; }
     public int Height { get; set; }
 

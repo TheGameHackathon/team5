@@ -5,6 +5,7 @@ using thegame.Services;
 var builder = WebApplication.CreateBuilder();
 builder.Services.AddMvc();
 builder.Services.AddScoped<IGamesRepository, GamesRepository>();
+builder.Services.AddScoped<IFieldGenerator, FieldGenerator>();
 
 var app = builder.Build();
 

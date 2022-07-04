@@ -13,19 +13,20 @@ public class GamesRepository : IGamesRepository
         _fieldGenerator = fieldGenerator;
     }
 
-    public FloodFillGame StartNewGame(Guid id)
+    public FloodFillGame StartNewGame(Guid id, int width, int height)
     {
-        throw new NotImplementedException();
+        _activegames[id] = new FloodFillGame(id, _fieldGenerator.GenerateNewField(), width, height);
+        return _activegames[id];
     }
 
     public FloodFillGame GetGame(Guid id)
     {
-        throw new NotImplementedException();
+        return _activegames[id];
     }
 
     public void Delete(Guid id)
     {
-        throw new NotImplementedException();
+        _activegames.Remove(id);
     }
 
     public void AddNewGame(GameDto gameDto)

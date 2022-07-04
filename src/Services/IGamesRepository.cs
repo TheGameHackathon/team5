@@ -4,8 +4,8 @@ namespace thegame.Services;
 
 public interface IGamesRepository
 {
-    Filed StartNewGame(Guid id);
-    Filed GetGame(Guid id);
+    FloodFillGame StartNewGame(Guid id);
+    FloodFillGame GetGame(Guid id);
 
     void Delete(Guid id);
 }

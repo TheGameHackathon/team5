@@ -1,4 +1,5 @@
 /.vs/
 /.idea
 /*.user
-/FloodFillTests/bin/Debug
+/FloodFillTests/bin/*
+/FloodFillTests/obj/*

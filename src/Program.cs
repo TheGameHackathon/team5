@@ -22,7 +22,8 @@ builder.Services.AddAutoMapper(cfg =>
     // cfg.CreateMap<UserToUpdateDto, UserEntity>();
     // cfg.CreateMap<UserEntity, UserToUpdateDto>();
     cfg.CreateMap<FloodFillGame, GameDto>().ForMember(dest => dest.Cells, opt => opt.MapFrom(src => src.Field))
-        .ForMember(dest => dest.MonitorMouseClicks, opt => opt.MapFrom(src => true));
+        .ForMember(dest => dest.MonitorMouseClicks, opt => opt.MapFrom(src => true))
+        .ForMember(dest => dest.MonitorKeyboard, opt => opt.MapFrom(src => true));
 }, Array.Empty<Assembly>());
 
 var app = builder.Build();

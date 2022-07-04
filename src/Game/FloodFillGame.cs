@@ -99,17 +99,23 @@ public class FloodFillGame
     public void Move(UserInputDto userInput)
     {
         var color = Field[userInput.ClickedPos.X + userInput.ClickedPos.Y * Width].Type;
-      
-        CellDto[] d = new CellDto[Field.Length];
         
-        Array.Copy(Field,d,Field.Length);
-        history.Push(d);
-        
+        List<CellDto> d = new List<CellDto>() { };
+        foreach (var e in Field)
+        {
+            var g = new CellDto(e.Id,e.Pos,e.Content,e.Content,e.ZIndex);
+            g.Type = e.Type;
+            d.Add(g);
+        }
+  
+        history.Push(d.ToArray());
         IsFinished = ColorStep(color);
     }
     
     public void Undo()
     {
+        if(history.Count == 0) return;
         Field = history.Pop();
+        
     }
 }

@@ -131,6 +131,18 @@
     filter: brightness(50%);
 }
 
+button#exitButton:hover{
+    background: #edcf72;
+}
+button#exitButton {
+    border: 0;
+    background: #edae49;
+    box-shadow: none;
+    border-radius: 10px;
+    width: 10%;
+    height: 5%;
+
+}
 #exitButton{
     position: absolute;
     z-index: 1000;

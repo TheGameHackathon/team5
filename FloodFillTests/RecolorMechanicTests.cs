@@ -1,16 +1,12 @@
-﻿using thegame;
-using thegame.Models;
-using thegame.Services;
-using FluentAssertions;
-
-namespace FloodFillTests
+﻿namespace FloodFillTests
 {
-    public class Tests
+    public class RecolorMechanicTests
     {
         private GameDto game;
         private GamesRepository gamesRepository;
         private FieldGenerator fieldGenerator;
         private FloodFillGame floodFillGame;
+
         [SetUp]
         public void Setup()
         {
@@ -30,17 +26,19 @@ namespace FloodFillTests
             floodFillGame = gamesRepository.GetGame(game.Id);
         }
 
-        [Test]
-        public void ChangeColor_OnCorrectClick()
+        [TestCase(3, 0, ExpectedResult = "color4", TestName = "Diagonal click")]
+        [TestCase(2, 0, ExpectedResult = "color2", TestName = "Click in a row X")]
+        public string ChangeColor_OnCorrectClick(int x, int y)
         {
             var userInput = new UserInputDto();
             userInput.ClickedPos = new VectorDto()
             {
-                X = 3,
-                Y = 0
+                X = x,
+                Y = y
             };
             floodFillGame.Move(userInput);
-            floodFillGame.Field.Where(cell => cell.Pos.X == 0 && cell.Pos.Y == 0).First().Type.Should().Be("color4");
+            //floodFillGame.Field.Where(cell => cell.Pos.X == 0 && cell.Pos.Y == 0).First().Type.Should().Be("color4");
+            return floodFillGame.Field.Where(cell => cell.Pos.X == 0 && cell.Pos.Y == 0).First().Type;
         }
 
         [Test]

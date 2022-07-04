@@ -26,7 +26,7 @@ public class GamesRepository
                 testCells[index] = cell;
             }
         }
-        return new GameDto(testCells, true, true, width, height, Guid.Empty, false, 0);
+        return new GameDto(testCells, true, true, width, height, Guid.NewGuid(), false, 0);
     }
 
     private (int, int, int) GetParametersForField(Difficult dif)
@@ -53,5 +53,13 @@ public class GamesRepository
                 throw new ArgumentOutOfRangeException($"Нахера ты мне передал эту сложность{dif}");
         }
         return (width, height, colorAmount);
+    }
+
+
+    public enum Difficult
+    {
+        Eazy,
+        Medium,
+        Hard
     }
 }

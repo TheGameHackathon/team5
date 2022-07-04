@@ -12,9 +12,9 @@ public class MovesController : Controller
     [HttpPost]
     public IActionResult Moves(Guid gameId, [FromBody]UserInputDto userInput)
     {
-        var game = TestData.AGameDto(userInput.ClickedPos ?? new VectorDto {X = 1, Y = 1});
-        if (userInput.ClickedPos != null)
-            game.Cells.First(c => c.Type == "color4").Pos = userInput.ClickedPos;
-        return Ok(game);
+        //var game = TestData.AGameDto(userInput.ClickedPos ?? new VectorDto {X = 1, Y = 1});
+        //if (userInput.ClickedPos != null)
+        //    game.Cells.First(c => c.Type == "color4").Pos = userInput.ClickedPos;
+        return Ok();
     }
 }

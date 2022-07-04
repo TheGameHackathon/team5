@@ -213,7 +213,7 @@ function updateCellDiv(cellDiv, cell) {
 function addKeyboardListener() {
     window.addEventListener("keydown",
         e => {
-            if (game && game.monitorKeyboard) {
+            if (game && game.monitorKeyboard && !spectatorMode) {
                 makeMove({ keyPressed: e.keyCode });
                 if (e.keyCode >= 37 && e.keyCode <= 40)
                     e.preventDefault();
@@ -253,6 +253,7 @@ async function initializePage() {
             game = await resp.json()
             spectatorMode = true;
             addResizeListener();
+            addKeyboardListener();
             renderField(game);
             exitButton.classList.toggle("hidden", false);
             pollingTimeout = setTimeout(handleSpectatePolling, 2000);
@@ -260,8 +261,6 @@ async function initializePage() {
         }
     }
     startgameOverlay.classList.toggle("hidden", false);
-    // use gameId if you want
-
     addKeyboardListener();
     addResizeListener();
     startButton.focus();

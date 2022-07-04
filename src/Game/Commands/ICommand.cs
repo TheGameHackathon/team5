@@ -2,5 +2,6 @@ namespace thegame.Commands;
 
 public abstract class ICommand
 {
-    public abstract void Apply();
+    public string name { get; private set;}
+    public abstract void Apply(UserInput input);
 }

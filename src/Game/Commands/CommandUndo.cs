@@ -1,19 +1,16 @@
-using thegame.Models;
-
 namespace thegame.Commands;
 
-public class CommandPickColor : ICommand
+public class CommandUndo : ICommand
 {
     public string name { get; private set;}
     
-    public CommandPickColor()
+    public CommandUndo()
     {
-        name = "PickColor";
+        name = "Undo";
     }
     
     public override void Apply(UserInput input)
     {
         throw new System.NotImplementedException();
     }
-
 }

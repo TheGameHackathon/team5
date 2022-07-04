@@ -13,6 +13,12 @@ public class GamesRepository : IGamesRepository
         _fieldGenerator = fieldGenerator;
     }
 
+    public FloodFillGame StartNewGame(Guid id, int width, int height)
+    {
+        _activegames[id] = new FloodFillGame(id, _fieldGenerator.GenerateNewField(), width, height);
+        return _activegames[id];
+    }
+
     public FloodFillGame GetGame(Guid id)
     {
         return _activegames[id];
@@ -25,8 +31,8 @@ public class GamesRepository : IGamesRepository
 
     public void AddNewGame(GameDto gameDto)
     {
-        var game = new FloodFillGame(gameDto.Cells,
-            gameDto.Width, gameDto.Height, gameDto.Id,
+        var game = new FloodFillGame(gameDto.Cells, 
+            gameDto.Width, gameDto.Height, gameDto.Id, 
             gameDto.IsFinished, gameDto.Score);
         _activegames.Add(gameDto.Id, game);
     }

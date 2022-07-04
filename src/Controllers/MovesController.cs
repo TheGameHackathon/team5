@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using thegame.Models;
 using thegame.Services;
@@ -10,10 +11,12 @@ namespace thegame.Controllers;
 public class MovesController : Controller
 {
     private readonly IGamesRepository _repo;
+    private readonly IMapper _mapper;
 
-    public MovesController(IGamesRepository repo)
+    public MovesController(IGamesRepository repo, IMapper mapper)
     {
         _repo = repo;
+        _mapper = mapper;
     }
 
     [HttpPost]
@@ -27,9 +30,10 @@ public class MovesController : Controller
         
         //if (userInput.ClickedPos != null)
         //    game.Cells.First(c => c.Type == "color4").Pos = userInput.ClickedPos;
-        
-        
-        
-        return Ok();
+
+        var game =  _repo.GetGame(gameId);
+        game.Move(userInput);
+        var mapped = _mapper.Map<GameDto>(game);
+        return Ok(mapped);
     }
 }

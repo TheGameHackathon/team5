@@ -14,8 +14,6 @@ public class GamesRepository : IGamesRepository
         _fieldGenerator = fieldGenerator;
     }
 
-
-
     public FloodFillGame GetGame(Guid id)
     {
         return !_activegames.ContainsKey(id) ? null : _activegames[id];

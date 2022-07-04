@@ -13,7 +13,8 @@ public class FloodFillGame
 {
 
     public List<ICommand> commands = new List<ICommand>();
-
+    public Stack<CellDto[]> history = new Stack<CellDto[]>();
+    
     public FloodFillGame(CellDto[] field, int width, int height, Guid id, bool isFinished, int score)
     {
         Field = field;
@@ -61,6 +62,67 @@ public class FloodFillGame
         return Field.All(cell => cell.Type == color);
     }
 
+    public bool StepAI()
+    {
+        var colorCount = 3;
+        var queue = new Stack<CellDto>();
+        queue.Push(Field[0]);
+        var baseColor = Field[0].Type;
+        var printedCellsCount = new Dictionary<int, int>();
+        var colors = new Dictionary<int, string>();
+        for (var i = 1; i <= colorCount; i++)
+            colors.Add(i, "color" + i.ToString());
+
+        for (var i = 1; i <= colorCount; i++)
+        {
+            if (colors[i] == baseColor) continue;
+            var currField = new CellDto[Field.Length];
+            var currStack = new Stack<CellDto>();
+            for (var j = 0; j < currField.Length; j++)
+                currField[j] = Field[j];
+            currField[0].Type = colors[i];
+            var currUsed = new HashSet<Vector>();
+            var currNeignbours = new List<Vector>();
+
+            while (currStack.Count > 0)
+            {
+                var node = currStack.Pop();
+                var neignbours = TryGetNeighbours(node, baseColor);
+
+                foreach (var neighbour in neignbours.Where(x => !currUsed.Contains(x)))
+                    currStack.Push(Field[neighbour.X + neighbour.Y * Width]);
+
+                node.Type = colors[i];
+                currUsed.Add(new Vector() { X = node.Pos.X, Y = node.Pos.Y });
+            }
+            printedCellsCount.Add(i, currUsed.Count);
+        }
+        var bestColor = string.Empty;
+        var maxPrintedCells = int.MinValue;
+        foreach (var cell in printedCellsCount)
+            if (cell.Value > maxPrintedCells) bestColor = colors[cell.Key];
+        Field[0].Type = bestColor;
+        queue.Push(Field[0]);
+
+        Score += 1;
+
+        var used = new HashSet<Vector>();
+        while (queue.Count > 0)
+        {
+            var node = queue.Pop();
+            var neignbours = TryGetNeighbours(node, baseColor);
+
+            foreach (var neighbour in neignbours.Where(x => !used.Contains(x)))
+            {
+                queue.Push(Field[neighbour.X + neighbour.Y * Width]);
+            }
+
+            node.Type = bestColor;
+            used.Add(new Vector() { X = node.Pos.X, Y = node.Pos.Y });
+        }
+        return Field.All(cell => cell.Type == bestColor);
+    }
+
     public List<Vector> TryGetNeighbours(CellDto cell, string color)
     {
         var result = new List<Vector>();
@@ -98,6 +160,23 @@ public class FloodFillGame
     public void Move(UserInputDto userInput)
     {
         var color = Field[userInput.ClickedPos.X + userInput.ClickedPos.Y * Width].Type;
+        
+        List<CellDto> d = new List<CellDto>() { };
+        foreach (var e in Field)
+        {
+            var g = new CellDto(e.Id,e.Pos,e.Content,e.Content,e.ZIndex);
+            g.Type = e.Type;
+            d.Add(g);
+        }
+  
+        history.Push(d.ToArray());
         IsFinished = ColorStep(color);
+    }
+    
+    public void Undo()
+    {
+        if(history.Count == 0) return;
+        Field = history.Pop();
+        
     }
 }

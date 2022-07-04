@@ -106,6 +106,27 @@ function makeMove(userInput) {
 
 function renderField(game) {
     field.innerHTML = "";
+
+    let btn = document.createElement("button");
+    btn.id = "undo"
+    btn.innerHTML = "Undo"
+    btn.onclick = () => {
+        lock.acquire().then(()=> {
+        fetch(`/api/games/${game.id}/moves/undo`,
+            {
+                method: "POST",
+            })
+            .then(handleApiErrors)
+            .then(newGame => {
+                game = newGame;
+                updateField(game);
+                isWaiting = false;
+            });
+        lock.release()
+    });
+    }
+    document.body.appendChild(btn);
+
     for (let y = 0; y < game.height; y++) {
         const row = document.createElement("tr");
         for (let x = 0; x < game.width; x++) {
@@ -118,6 +139,8 @@ function renderField(game) {
         }
         field.appendChild(row);
     }
+    
+    //field.appendChild(btn)
     updateField(game);
 }
 

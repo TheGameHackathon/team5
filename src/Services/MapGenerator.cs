@@ -37,7 +37,7 @@ namespace thegame.Services
 
             switch (dif)
             {
-                case Difficult.Eazy:
+                case Difficult.Easy:
                     width = height = 8;
                     colorAmount = 3;
                     break;
@@ -58,7 +58,7 @@ namespace thegame.Services
 
         public enum Difficult
         {
-            Eazy,
+            Easy,
             Medium,
             Hard
         }

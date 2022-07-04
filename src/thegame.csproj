@@ -5,8 +5,4 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Folder Include="Interfaces" />
-  </ItemGroup>
-
 </Project>

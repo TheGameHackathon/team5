@@ -9,9 +9,9 @@ namespace thegame.Controllers;
 [Route("api/games/{gameId}/moves")]
 public class MovesController : Controller
 {
-    private readonly IGameRepository _repo;
+    private readonly IGamesRepository _repo;
 
-    public MovesController(IGameRepository repo)
+    public MovesController(IGamesRepository repo)
     {
         _repo = repo;
     }

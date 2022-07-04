@@ -5,7 +5,7 @@ namespace thegame.Services;
 public class GamesRepository : IGamesRepository
 {
     private Dictionary<Guid, FloodFillGame> _activegames = new Dictionary<Guid, FloodFillGame>();
-    public GamesRepository(IFieldGenerator fieldGenerator)
+    public GamesRepository()
     {
         
     }

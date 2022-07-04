@@ -84,9 +84,11 @@
     display: none;
 }
 
-.undo {
+button#undo {
     position: fixed;
-    bottom: 500px;
+    bottom: 50%;
+    width: 10%;
+    height: 10%;
 
 }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using thegame.Models;
 
 namespace thegame.Services
@@ -26,6 +27,7 @@ namespace thegame.Services
                     testCells[index] = cell;
                 }
             }
+
             return new GameDto(testCells, true, true, width, height, Guid.NewGuid(), false, 0);
         }
 

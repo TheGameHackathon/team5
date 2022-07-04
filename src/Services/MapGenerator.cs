@@ -3,16 +3,11 @@ using thegame.Models;
 
 namespace thegame.Services
 {
-    public class MapGenerator : IFieldGenerator
+    public class FieldGenerator : IFieldGenerator
     {
-        public Filed GenerateNewField()
+        public GameDto GenerateNewField(Difficult diff)
         {
-            throw new NotImplementedException();
-        }
-
-        public GameDto StartNewGame(Difficult dif)
-        {
-            var (width, height, colorAmount) = GetParametersForField(dif);
+            var (width, height, colorAmount) = GetParametersForField(diff);
 
             var testCells = new CellDto[width * height];
 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using thegame.Models;
 
 namespace thegame.Services;
 
@@ -25,5 +26,13 @@ public class GamesRepository : IGamesRepository
     public void Delete(Guid id)
     {
         throw new NotImplementedException();
+    }
+
+    public void AddNewGame(GameDto gameDto)
+    {
+        var game = new FloodFillGame(gameDto.Cells, 
+            gameDto.Width, gameDto.Height, gameDto.Id, 
+            gameDto.IsFinished, gameDto.Score);
+        _activegames.Add(gameDto.Id, game);
     }
 }

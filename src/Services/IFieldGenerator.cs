@@ -1,6 +1,9 @@
-﻿namespace thegame.Services;
+﻿using thegame.Models;
+using static thegame.Services.FieldGenerator;
+
+namespace thegame.Services;
 
 public interface IFieldGenerator
 {
-    public Field GenerateNewField();
+    public GameDto GenerateNewField(Difficult diff);
 }

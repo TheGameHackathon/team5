@@ -16,7 +16,7 @@ public class GamesRepository : IGamesRepository
 
     public FloodFillGame GetGame(Guid id)
     {
-        return _activegames[id];
+        return !_activegames.ContainsKey(id) ? null : _activegames[id];
     }
 
     public void Delete(Guid id)

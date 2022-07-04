@@ -1,6 +1,6 @@
 namespace thegame.Commands;
 
-public class ICommand
+public abstract class ICommand
 {
-    
+    public abstract void Apply();
 }

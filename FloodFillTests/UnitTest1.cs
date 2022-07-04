@@ -31,7 +31,7 @@ namespace FloodFillTests
         }
 
         [Test]
-        public void MoveOnCorrectClick()
+        public void ChangeColor_OnCorrectClick()
         {
             var userInput = new UserInputDto();
             userInput.ClickedPos = new VectorDto()
@@ -42,5 +42,24 @@ namespace FloodFillTests
             floodFillGame.Move(userInput);
             floodFillGame.Field.Where(cell => cell.Pos.X == 0 && cell.Pos.Y == 0).First().Type.Should().Be("color4");
         }
+
+        [Test]
+        public void FindAndRecolor_Neighborhoods_OnClick()
+        {
+            var userInput = new UserInputDto();
+            userInput.ClickedPos = new VectorDto()
+            {
+                X = 3,
+                Y = 0
+            };
+            floodFillGame.Move(userInput);
+            floodFillGame.Field
+                .Where(cell => cell.Pos.X == 0 && cell.Pos.Y == 0)
+                .First().Type.Should().Be("color4");
+            floodFillGame.Field
+                .Where(cell => cell.Pos.X == 0 && cell.Pos.Y == 1)
+                .First().Type.Should().Be("color4");
+        }
+
     }
 }

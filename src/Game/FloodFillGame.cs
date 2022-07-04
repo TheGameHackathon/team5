@@ -157,10 +157,14 @@ public class FloodFillGame
         return result;
     }
 
+
+
     public void Move(UserInputDto userInput)
     {
-        var color = Field[userInput.ClickedPos.X + userInput.ClickedPos.Y * Width].Type;
-        
+        var color = string.Empty;
+        if (userInput != null && userInput.ClickedPos != null)
+            color = Field[userInput.ClickedPos.X + userInput.ClickedPos.Y * Width].Type;
+        IsFinished = userInput.KeyPressed == 73 ? StepAI() : ColorStep(color);
         List<CellDto> d = new List<CellDto>() { };
         foreach (var e in Field)
         {
@@ -181,32 +185,4 @@ public class FloodFillGame
     }
 
 
-    public void SmartMove()
-    {
-
-        int max_color;
-        int max_count;
-        var color = Field[0];
-        FloodFillGame game;
-        for (int i = 1; i < 8; i++)
-        {
-            game = new FloodFillGame(Field, Width, Height, Id, IsFinished, Score);
-            for (int j = 1; j < 8; j++)
-            {
-                game.ColorStep("color" + j);
-            }
-            var dic = new Dictionary<string, int>();
-            foreach( var a in Field)
-            {
-                if (dic.ContainsKey(a.Content))
-                    dic[a.Content]++;
-                else
-                    dic.Add(a.Content, 1);
-            }
-            //for
-        }
-
-        max_color = 0;
-        max_count = 0;
-    }
 }

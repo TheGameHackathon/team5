@@ -33,22 +33,10 @@ public class MovesController : Controller
 
 
         var game = _repo.GetGame(gameId);
-        if (userInput != null)
-        {
-            if (userInput.KeyPressed == 'i')
-            {
-                game.SmartMove();
-                return Ok(_mapper.Map<GameDto>(game));
-            }
-        }
 
-        if (userInput.ClickedPos != null)
-        {
             game.Move(userInput);
             var mapped = _mapper.Map<GameDto>(game);
             return Ok(mapped);
-        }
-        return Ok();
     }
     
     [HttpPost("undo")]

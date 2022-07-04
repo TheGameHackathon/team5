@@ -28,7 +28,7 @@ namespace thegame.Services
                 }
             }
 
-            return new GameDto(testCells, true, true, width, height, Guid.NewGuid(), false, 0);
+            return new GameDto(testCells, false, true, width, height, Guid.NewGuid(), false, 0);
         }
 
         private (int, int, int) GetParametersForField(Difficult dif)

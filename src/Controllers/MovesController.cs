@@ -32,6 +32,7 @@ public class MovesController : Controller
         //    game.Cells.First(c => c.Type == "color4").Pos = userInput.ClickedPos;
 
         var game =  _repo.GetGame(gameId);
+       
         game.Move(userInput);
         var mapped = _mapper.Map<GameDto>(game);
         return Ok(mapped);

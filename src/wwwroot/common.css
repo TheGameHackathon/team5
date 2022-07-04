@@ -84,6 +84,11 @@
     display: none;
 }
 
+.undo {
+    position: fixed;
+    bottom: 500px;
+
+}
 
 .color0 {
     background-color: blue;

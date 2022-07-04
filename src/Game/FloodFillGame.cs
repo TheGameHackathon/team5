@@ -13,7 +13,8 @@ public class FloodFillGame
 {
 
     public List<ICommand> commands = new List<ICommand>();
-
+    public Stack<CellDto[]> history = new Stack<CellDto[]>();
+    
     public FloodFillGame(CellDto[] field, int width, int height, Guid id, bool isFinished, int score)
     {
         Field = field;
@@ -98,6 +99,17 @@ public class FloodFillGame
     public void Move(UserInputDto userInput)
     {
         var color = Field[userInput.ClickedPos.X + userInput.ClickedPos.Y * Width].Type;
+      
+        CellDto[] d = new CellDto[Field.Length];
+        
+        Array.Copy(Field,d,Field.Length);
+        history.Push(d);
+        
         IsFinished = ColorStep(color);
+    }
+    
+    public void Undo()
+    {
+        Field = history.Pop();
     }
 }

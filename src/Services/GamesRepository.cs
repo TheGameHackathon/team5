@@ -1,10 +1,29 @@
 using System;
 using System.Collections.Generic;
-
 namespace thegame.Services;
 
-public class GamesRepository
+public class GamesRepository : IGameRepository
 {
-    public Dictionary<Guid, FloodFillGame> _activegames = new Dictionary<Guid, FloodFillGame>();
-    
+    private Dictionary<Guid, FloodFillGame> _activegames = new Dictionary<Guid, FloodFillGame>();
+    public GamesRepository(IFieldGenerator fieldGenerator)
+    {
+        
+    }
+
+    public Filed StartNewGame(Guid id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Filed GetGame(Guid id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void Delete(Guid id)
+    {
+        throw new NotImplementedException();
+    }
+
+   
 }

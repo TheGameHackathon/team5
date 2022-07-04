@@ -2,5 +2,5 @@
 
 public interface IFieldGenerator
 {
-    public Filed GenerateNewField();
+    public Field GenerateNewField();
 }

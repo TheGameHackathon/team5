@@ -1,4 +1,5 @@
 using System;
+using thegame.Services;
 using System.Collections.Generic;
 using thegame.Commands;
 
@@ -10,10 +11,9 @@ public class FloodFillGame
     
     public List<ICommand> commands = new List<ICommand>();
     
-    public FloodFillGame(Cell[] cells, int width, int height, Guid id, bool isFinished, int score)
+    public FloodFillGame(Field field, int width, int height, Guid id, bool isFinished, int score)
     {
-        Cells = cells;
-        
+        Field = field;
         Width = width;
         Height = height;
         Id = id;
@@ -23,7 +23,7 @@ public class FloodFillGame
         commands.Add(new CommandPickColor());
     }
 
-    public Cell[] Cells { get; set; }
+    public Field Field { get; set; }
     public int Width { get; set; }
     public int Height { get; set; }
 

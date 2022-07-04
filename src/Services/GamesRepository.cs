@@ -4,18 +4,19 @@ namespace thegame.Services;
 
 public class GamesRepository : IGameRepository
 {
+    private readonly IFieldGenerator _fieldGenerator;
     private Dictionary<Guid, FloodFillGame> _activegames = new Dictionary<Guid, FloodFillGame>();
     public GamesRepository(IFieldGenerator fieldGenerator)
     {
-        
+        _fieldGenerator = fieldGenerator;
     }
 
-    public Filed StartNewGame(Guid id)
+    public FloodFillGame StartNewGame(Guid id)
     {
         throw new NotImplementedException();
     }
 
-    public Filed GetGame(Guid id)
+    public FloodFillGame GetGame(Guid id)
     {
         throw new NotImplementedException();
     }
@@ -24,6 +25,4 @@ public class GamesRepository : IGameRepository
     {
         throw new NotImplementedException();
     }
-
-   
 }

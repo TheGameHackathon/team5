@@ -1,13 +1,16 @@
 using System;
+using System.Linq;
 using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using thegame;
+using thegame.Models;
 using thegame.Services;
 
 var builder = WebApplication.CreateBuilder();
 builder.Services.AddMvc();
-builder.Services.AddScoped<IGamesRepository, GamesRepository>();
-builder.Services.AddScoped<IFieldGenerator, FieldGenerator>();
+builder.Services.AddSingleton<IGamesRepository, GamesRepository>();
+builder.Services.AddSingleton<IFieldGenerator, FieldGenerator>();
 
 builder.Services.AddAutoMapper(cfg =>
 {
@@ -18,6 +21,7 @@ builder.Services.AddAutoMapper(cfg =>
     // cfg.CreateMap<UserToCreateDto, UserEntity>();
     // cfg.CreateMap<UserToUpdateDto, UserEntity>();
     // cfg.CreateMap<UserEntity, UserToUpdateDto>();
+    cfg.CreateMap<FloodFillGame, GameDto>().ForMember(dest => dest.Cells, opt => opt.MapFrom(src => src.Field));
 }, Array.Empty<Assembly>());
 
 var app = builder.Build();

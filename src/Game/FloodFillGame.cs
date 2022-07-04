@@ -1,7 +1,9 @@
 using System;
 using thegame.Services;
 using System.Collections.Generic;
+using System.Linq;
 using thegame.Commands;
+using thegame.Game;
 
 
 namespace thegame;
@@ -31,5 +33,8 @@ public class FloodFillGame
     public bool IsFinished { get; set; }
     public int Score { get; set; }
 
-    
+    public void executeCommand(string command, UserInput input)
+    {
+        commands.FirstOrDefault(x=> x.name == command).Apply(this,input);
+    }
 }

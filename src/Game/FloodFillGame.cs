@@ -33,7 +33,7 @@ public class FloodFillGame
     public bool IsFinished { get; set; }
     public int Score { get; set; }
 
-    public void executeCommand(string command, UserInput input)
+    public void ExecuteCommand(string command, UserInput input)
     {
         commands.FirstOrDefault(x=> x.name == command).Apply(this,input);
     }

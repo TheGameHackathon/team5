@@ -2,7 +2,7 @@
 
 namespace thegame.Services;
 
-public interface IGameRepository
+public interface IGamesRepository
 {
     Filed StartNewGame(Guid id);
     Filed GetGame(Guid id);

@@ -35,6 +35,6 @@ public class GamesRepository : IGamesRepository
         var game = new FloodFillGame(gameDto.Cells, 
             gameDto.Width, gameDto.Height, gameDto.Id, 
             gameDto.IsFinished, gameDto.Score);
-        _activegames.Add(gameDto.Id, game);
+        _activegames[gameDto.Id] = game;
     }
 }

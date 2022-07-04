@@ -84,6 +84,13 @@
     display: none;
 }
 
+button#undo {
+    position: fixed;
+    bottom: 50%;
+    width: 10%;
+    height: 10%;
+
+}
 
 .color0 {
     background-color: blue;

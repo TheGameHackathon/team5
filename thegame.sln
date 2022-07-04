@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2026
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32616.157
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "thegame", "src\thegame.csproj", "{CA421CE0-9382-4075-8F57-C9A5F4F95825}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "thegame", "src\thegame.csproj", "{CA421CE0-9382-4075-8F57-C9A5F4F95825}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FloodFillTests", "FloodFillTests\FloodFillTests.csproj", "{5014C6AA-08D5-47D5-8A47-D390D3C6C2EE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{CA421CE0-9382-4075-8F57-C9A5F4F95825}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CA421CE0-9382-4075-8F57-C9A5F4F95825}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CA421CE0-9382-4075-8F57-C9A5F4F95825}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5014C6AA-08D5-47D5-8A47-D390D3C6C2EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5014C6AA-08D5-47D5-8A47-D390D3C6C2EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5014C6AA-08D5-47D5-8A47-D390D3C6C2EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5014C6AA-08D5-47D5-8A47-D390D3C6C2EE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

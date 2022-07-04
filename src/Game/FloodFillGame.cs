@@ -41,9 +41,10 @@ public class FloodFillGame
         var used = new HashSet<Vector>();
         var neignbours = new List<Vector>();
 
-        while (TryGetNeighbours(queue.Peek(), neignbours, baseColor))
+        while (queue.Count > 0)
         {
             var node = queue.Dequeue();
+            TryGetNeighbours(node, neignbours, baseColor);
             foreach(var neighbour in neignbours.Where(x => !used.Contains(x)))
             {
                 queue.Enqueue(Field[neighbour.X + neighbour.Y * Width]);
@@ -57,29 +58,29 @@ public class FloodFillGame
         public bool TryGetNeighbours(CellDto cell, List<Vector> neigbours, string color)
         {
             var flag = false;
-            if (cell.Pos.Y + Width <= Field.Length &&
+            if (cell.Pos.X + cell.Pos.Y * Width + Width < Field.Length &&
                 Field[cell.Pos.X + cell.Pos.Y * Width + Width].Type == color)
             {
                 neigbours.Add(new Vector() { X = cell.Pos.X, Y = cell.Pos.Y + 1});
                 flag = true;
             }    
                 
-            if (cell.Pos.Y - Width >= 0 &&
+            if (cell.Pos.X + cell.Pos.Y * Width - Width >= 0 &&
                 Field[cell.Pos.X + cell.Pos.Y * Width - Width].Type == color)
             {
                 neigbours.Add(new Vector() { X = cell.Pos.X, Y = cell.Pos.Y - 1});
                 flag = true;
             }
                 
-            if (cell.Pos.X + 1 <= Field.Length &&
-                Field[cell.Pos.X + 1 + cell.Pos.Y *Width].Type == color)
+            if (cell.Pos.X + 1 + cell.Pos.Y * Width < Field.Length &&
+                Field[cell.Pos.X + 1 + cell.Pos.Y * Width].Type == color)
             {
                 neigbours.Add(new Vector() { X = cell.Pos.X + 1, Y = cell.Pos.Y });
                 flag = true;
             }
                 
-            if (cell.Pos.X - 1 >= Field.Length &&
-                Field[cell.Pos.X - 1 + cell.Pos.Y * Width + Width].Type == color)
+            if (cell.Pos.X - 1 + cell.Pos.Y * Width >= 0 &&
+                Field[cell.Pos.X - 1 + cell.Pos.Y * Width].Type == color)
             {
                 neigbours.Add(new Vector() { X = cell.Pos.X - 1, Y = cell.Pos.Y });
                 flag = true;

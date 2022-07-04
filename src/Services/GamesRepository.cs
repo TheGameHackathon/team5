@@ -8,6 +8,7 @@ public class GamesRepository : IGamesRepository
 {
     private readonly IFieldGenerator _fieldGenerator;
     private Dictionary<Guid, FloodFillGame> _activegames = new Dictionary<Guid, FloodFillGame>();
+
     public GamesRepository(IFieldGenerator fieldGenerator)
     {
         _fieldGenerator = fieldGenerator;

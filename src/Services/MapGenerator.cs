@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using thegame.Models;
 
 namespace thegame.Services
@@ -26,6 +27,7 @@ namespace thegame.Services
                     testCells[index] = cell;
                 }
             }
+
             return new GameDto(testCells, true, true, width, height, Guid.NewGuid(), false, 0);
         }
 
@@ -37,7 +39,7 @@ namespace thegame.Services
 
             switch (dif)
             {
-                case Difficult.Eazy:
+                case Difficult.Easy:
                     width = height = 8;
                     colorAmount = 3;
                     break;
@@ -58,7 +60,7 @@ namespace thegame.Services
 
         public enum Difficult
         {
-            Eazy,
+            Easy,
             Medium,
             Hard
         }

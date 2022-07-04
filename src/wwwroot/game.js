@@ -15,7 +15,8 @@ function handleApiErrors(result) {
 }
 
 async function startGame() {
-    game = await fetch("/api/games", { method: "POST" })
+    let diff = document.getElementById('difficult').value;
+    game = await fetch("/api/games", { method: "POST", body: JSON.stringify({ difficult: diff }), headers: {'content-type': 'application/json'}})
         .then(handleApiErrors);
     window.history.replaceState(game.id, "The Game", "/" + game.id);
     renderField(game);

@@ -12,6 +12,6 @@ public class Vector
 
     public override int GetHashCode()
     {
-        return X * 89 + Y;
+        return X * 399557 + Y;
     }
 }

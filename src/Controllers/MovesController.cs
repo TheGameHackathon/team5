@@ -9,12 +9,27 @@ namespace thegame.Controllers;
 [Route("api/games/{gameId}/moves")]
 public class MovesController : Controller
 {
+    private readonly IGameRepository _repo;
+
+    public MovesController(IGameRepository repo)
+    {
+        _repo = repo;
+    }
+
     [HttpPost]
     public IActionResult Moves(Guid gameId, [FromBody]UserInputDto userInput)
     {
-        //var game = TestData.AGameDto(userInput.ClickedPos ?? new VectorDto {X = 1, Y = 1});
-        //if (userInput.ClickedPos != null)
-        //    game.Cells.First(c => c.Type == "color4").Pos = userInput.ClickedPos;
-        return Ok();
+      
+        var game = TestData.AGameDto(userInput.ClickedPos ?? new VectorDto {X = 1, Y = 1});
+
+        //_gamesRepository._activegames[gameId].ActComand(usrinput);
+        //маапить игру и отправлять
+        
+        if (userInput.ClickedPos != null)
+            game.Cells.First(c => c.Type == "color4").Pos = userInput.ClickedPos;
+        
+        
+        
+        return Ok(game);
     }
 }

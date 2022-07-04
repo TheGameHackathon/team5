@@ -7,6 +7,12 @@ namespace thegame.Controllers;
 [Route("api/games")]
 public class GamesController : Controller
 {
+    private readonly IGameRepository _repo;
+
+    public GamesController(IGameRepository repo)
+    {
+        _repo = repo;
+    }
     [HttpPost]
     public IActionResult Index()
     {

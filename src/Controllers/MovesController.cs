@@ -38,7 +38,7 @@ public class MovesController : Controller
         return Ok(mapped);
     }
     
-    [HttpPost("/undo")]
+    [HttpPost("undo")]
     public IActionResult Undo(Guid gameId)
     {
         var game =  _repo.GetGame(gameId);

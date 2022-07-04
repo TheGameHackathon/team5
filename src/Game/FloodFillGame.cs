@@ -159,6 +159,10 @@ public class FloodFillGame
 
     public void Move(UserInputDto userInput)
     {
+        if(userInput.KeyPressed != 0)
+        {
+            return;
+        }
         var color = Field[userInput.ClickedPos.X + userInput.ClickedPos.Y * Width].Type;
         
         List<CellDto> d = new List<CellDto>() { };

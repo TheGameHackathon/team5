@@ -25,8 +25,8 @@ public class GamesRepository : IGamesRepository
 
     public void AddNewGame(GameDto gameDto)
     {
-        var game = new FloodFillGame(gameDto.Cells, 
-            gameDto.Width, gameDto.Height, gameDto.Id, 
+        var game = new FloodFillGame(gameDto.Cells,
+            gameDto.Width, gameDto.Height, gameDto.Id,
             gameDto.IsFinished, gameDto.Score);
         _activegames.Add(gameDto.Id, game);
     }

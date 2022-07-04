@@ -36,6 +36,7 @@ public class FloodFillGame
     public bool ColorStep(string color)
     {
         var queue = new Stack<CellDto>();
+        queue.Push(Field[0]);
 
         var baseColor = Field[0].Type;
         if (color == baseColor)
@@ -47,9 +48,8 @@ public class FloodFillGame
         while (queue.Count > 0)
         {
             var node = queue.Pop();
-            var neignbours = TryGetNeighbours(node, baseColor, Field);
-
-            foreach (var neighbour in neignbours.Where(x => !used.Contains(x)))
+            var neigbhours = TryGetNeighbours(node, baseColor);
+            foreach (var neighbour in neigbhours.Where(x => !used.Contains(x)))
             {
                 queue.Push(Field[neighbour.X + neighbour.Y * Width]);
             }
@@ -86,7 +86,7 @@ public class FloodFillGame
             while (currStack.Count > 0)
             {
                 var currNode = currStack.Pop();
-                var currNeighbours = TryGetNeighbours(currNode, baseColor, currField);
+                var currNeighbours = TryGetNeighbours(currNode, baseColor);
 
                 foreach (var neighbour in currNeignbours.Where(x => !currUsed.Contains(x)))
                     currStack.Push(currField[neighbour.X + neighbour.Y * Width]);
@@ -110,7 +110,7 @@ public class FloodFillGame
         while (queue.Count > 0)
         {
             var node = queue.Pop();
-            var neignbours = TryGetNeighbours(node, baseColor, Field);
+            var neignbours = TryGetNeighbours(node, baseColor);
 
             foreach (var neighbour in neignbours.Where(x => !used.Contains(x)))
             {
@@ -123,39 +123,40 @@ public class FloodFillGame
         return Field.All(cell => cell.Type == bestColor);
     }
 
-    public List<Vector> TryGetNeighbours(CellDto cell, string color, CellDto[] field)
+    public List<Vector> TryGetNeighbours(CellDto cell, string color)
     {
         var result = new List<Vector>();
 
         if (cell.Pos.Y != Height &&
             cell.Pos.X + cell.Pos.Y * Width + Width < Field.Length &&
-            field[cell.Pos.X + cell.Pos.Y * Width + Width].Type == color)
+            Field[cell.Pos.X + cell.Pos.Y * Width + Width].Type == color)
         {
             result.Add(new Vector() { X = cell.Pos.X, Y = cell.Pos.Y + 1 });
         }
 
         if (cell.Pos.Y != 0 &&
             cell.Pos.X + cell.Pos.Y * Width - Width >= 0 &&
-            field[cell.Pos.X + cell.Pos.Y * Width - Width].Type == color)
+            Field[cell.Pos.X + cell.Pos.Y * Width - Width].Type == color)
         {
             result.Add(new Vector() { X = cell.Pos.X, Y = cell.Pos.Y - 1 });
         }
 
         if (cell.Pos.X != Width &&
             cell.Pos.X + 1 + cell.Pos.Y * Width < Field.Length &&
-            field[cell.Pos.X + 1 + cell.Pos.Y * Width].Type == color)
+            Field[cell.Pos.X + 1 + cell.Pos.Y * Width].Type == color)
         {
             result.Add(new Vector() { X = cell.Pos.X + 1, Y = cell.Pos.Y });
         }
 
         if (cell.Pos.X != 0 &&
             cell.Pos.X - 1 + cell.Pos.Y * Width >= 0 &&
-            field[cell.Pos.X - 1 + cell.Pos.Y * Width].Type == color)
+            Field[cell.Pos.X - 1 + cell.Pos.Y * Width].Type == color)
         {
             result.Add(new Vector() { X = cell.Pos.X - 1, Y = cell.Pos.Y });
         }
         return result;
     }
+
 
 
 

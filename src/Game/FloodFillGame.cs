@@ -11,7 +11,8 @@ public class FloodFillGame
 {
 
     public List<ICommand> commands = new List<ICommand>();
-
+    public Stack<CellDto[]> history = new Stack<CellDto[]>();
+    
     public FloodFillGame(CellDto[] field, int width, int height, Guid id, bool isFinished, int score)
     {
         Field = field;
@@ -156,10 +157,25 @@ public class FloodFillGame
 
     public void Move(UserInputDto userInput)
     {
-        var color = string.Empty;
-        if (userInput != null && userInput.ClickedPos != null)
-            color = Field[userInput.ClickedPos.X + userInput.ClickedPos.Y * Width].Type;
-        IsFinished = userInput.KeyPressed == 73 ? StepAI() : ColorStep(color);
+        var color = Field[userInput.ClickedPos.X + userInput.ClickedPos.Y * Width].Type;
+        
+        List<CellDto> d = new List<CellDto>() { };
+        foreach (var e in Field)
+        {
+            var g = new CellDto(e.Id,e.Pos,e.Content,e.Content,e.ZIndex);
+            g.Type = e.Type;
+            d.Add(g);
+        }
+  
+        history.Push(d.ToArray());
+        IsFinished = ColorStep(color);
+    }
+    
+    public void Undo()
+    {
+        if(history.Count == 0) return;
+        Field = history.Pop();
+        
     }
 
 
